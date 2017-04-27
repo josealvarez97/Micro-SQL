@@ -13,9 +13,10 @@ namespace Proyecto01
 {
     public partial class Form2 : Form
     {
+        Form1 form;
         public Form2()
         {
-            InitializeComponent();
+            InitializeComponent();           
         }
 
 
@@ -40,7 +41,10 @@ namespace Proyecto01
                         dictionary.Flush();
                     }
                 }
+                dictionary.Dispose();
             }
+            form = new Form1();
+            form.Show();
         }
 
 
@@ -57,8 +61,11 @@ namespace Proyecto01
                 dictionary.WriteLine("<DROP TABLE>, <DROP TABLE>");
                 dictionary.WriteLine("<INSERT INTO>, <INSERT INTO>");
                 dictionary.WriteLine("<VALUES>, <VALUES>");
-                dictionary.WriteLine("<GO>, <GO>");
+                dictionary.Write("<GO>, <GO>");
                 dictionary.Flush();
+                dictionary.Dispose();
+                form = new Form1();
+                form.Show();
             }
         }
     }
