@@ -8,3 +8,15 @@ C:\Users\Oscar\Desktop\Laboratorio Estructuras\Estructura-de-Datos-1-Lab\Proyect
 C:\Users\Oscar\Desktop\Laboratorio Estructuras\Estructura-de-Datos-1-Lab\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.exe
 C:\Users\Oscar\Desktop\Laboratorio Estructuras\Estructura-de-Datos-1-Lab\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.pdb
 C:\Users\Oscar\Desktop\Laboratorio Estructuras\Estructura-de-Datos-1-Lab\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.Form2.resources
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\bin\Debug\Proyecto01.exe.config
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.exe
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.pdb
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\bin\Debug\Proyecto01.exe
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\bin\Debug\Proyecto01.pdb
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\bin\Debug\DataStructuresURL_3.0.dll
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\bin\Debug\DataStructuresURL_3.0.pdb
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.csprojResolveAssemblyReference.cache
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.Form1.resources
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.Form2.resources
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.Properties.Resources.resources
+C:\Users\Oscar\Desktop\Laboratorio Estructuras\MicroSQL\Micro-SQL\Proyecto\Proyecto01\Proyecto01\obj\Debug\Proyecto01.csproj.GenerateResource.Cache
