@@ -30,7 +30,8 @@ namespace Proyecto01
             {
                 while (j < keyWords.Length)
                 {
-                    if (lines[i] == keyWords[j])
+                    // Crear objeto "Palabra reservada" o algo por el estilo, para que tenga dos atributos.... traduccion y palabra reservada... ??????? una clase solo para tener dos atributos
+                    if (lines[i] == keyWords[j]) 
                     {
                         switch (keyWords[j])
                         {
@@ -144,6 +145,8 @@ namespace Proyecto01
                 for (int j = 0; j < keyWordsInFile[1].Length; j++)
                 {
                     keyWordsInFile[1] = keyWordsInFile[1].Trim();
+                    keyWordsInFile[1] = keyWordsInFile[1].TrimStart('<');
+                    keyWordsInFile[1] = keyWordsInFile[1].TrimEnd('>');
                     if (keyWordsInFile[1][j] != '<' && keyWordsInFile[1][j] != '>')
                         correctedKeyWord += keyWordsInFile[1][j];
                 }
