@@ -9,41 +9,23 @@ namespace Proyecto01
 {
     class Int : IStringParseable<Int>, IComparable<Int>
     {
-        string IStringParseable<Int>.DEFAULT_FORMAT_
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int objectLength => throw new NotImplementedException();
 
-        string IStringParseable<Int>.DEFAULT_MIN_VAL_FORMAT
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string DEFAULT_FORMAT_ => throw new NotImplementedException();
 
-        int IStringParseable<Int>.objectLength
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string DEFAULT_MIN_VAL_FORMAT => throw new NotImplementedException();
 
-        int IComparable<Int>.CompareTo(Int other)
+        public int CompareTo(Int other)
         {
             throw new NotImplementedException();
         }
 
-        Int IStringParseable<Int>.ParseToObjectType(string str)
+        public Int ParseToObjectType(string str)
         {
             throw new NotImplementedException();
         }
 
-        string IStringParseable<Int>.ParseToString(Int obj)
+        public string ParseToString(Int obj)
         {
             throw new NotImplementedException();
         }
