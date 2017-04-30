@@ -9,43 +9,33 @@ namespace Proyecto01
 {
     class Row : IStringParseable<Row>
     {
+        
+        public Dictionary<string, Int> intColumnsDictionary = new Dictionary<string, Int>();
+        public Dictionary<string, Varchar> varcharColumnsDictionary;
+        public Dictionary<string, TimeDate> timeDateColumnsDictionary;
 
-        Dictionary<string, Int> intColumnsDictionary;
-        Dictionary<string, Varchar> varcharColumnsDictionary;
-        Dictionary<string, TimeDate> timeDateColumnsDictionary;
+        public int objectLength => throw new NotImplementedException();
 
-        string IStringParseable<Row>.DEFAULT_FORMAT_
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string DEFAULT_FORMAT_ => throw new NotImplementedException();
 
-        string IStringParseable<Row>.DEFAULT_MIN_VAL_FORMAT
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string DEFAULT_MIN_VAL_FORMAT => throw new NotImplementedException();
 
-        int IStringParseable<Row>.objectLength
-        {
-            get
-            {
-                return intColumnsDictionary.Count + varcharColumnsDictionary.Count + timeDateColumnsDictionary.Count;
-            }
-        }
-
-        Row IStringParseable<Row>.ParseToObjectType(string str)
+        public Row ParseToObjectType(string str)
         {
             throw new NotImplementedException();
         }
 
-        string IStringParseable<Row>.ParseToString(Row obj)
+        public string ParseToString(Row obj)
         {
             throw new NotImplementedException();
+        }
+
+
+
+
+        public int CountColums()
+        {
+            return intColumnsDictionary.Count + varcharColumnsDictionary.Count + timeDateColumnsDictionary.Count;
         }
     }
 }

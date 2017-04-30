@@ -33,8 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DataStructuresURL_3.0">
-      <HintPath>..\..\..\..\..\Estructura-de-Datos-1-Lab\Lab 3\DataStructuresURL_3.0\DataStructuresURL_3.0\bin\Debug\DataStructuresURL_3.0.dll</HintPath>
+    <Reference Include="DataStructuresURL_3.0, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Jose\Github\Estructura-de-Datos-1-Lab\Lab 3\DataStructuresURL_3.0\DataStructuresURL_3.0\bin\Debug\DataStructuresURL_3.0.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -68,6 +69,7 @@
     <Compile Include="Row.cs" />
     <Compile Include="SQLFunctions.cs" />
     <Compile Include="SQLTextParser.cs" />
+    <Compile Include="tableFilesHandler.cs" />
     <Compile Include="TimeDate.cs" />
     <Compile Include="Varchar.cs" />
     <EmbeddedResource Include="Form1.resx">
