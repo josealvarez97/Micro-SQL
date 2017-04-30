@@ -9,41 +9,23 @@ namespace Proyecto01
 {
     class TimeDate : IStringParseable<TimeDate>, IComparable<TimeDate>
     {
-        string IStringParseable<TimeDate>.DEFAULT_FORMAT_
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int objectLength => throw new NotImplementedException();
 
-        string IStringParseable<TimeDate>.DEFAULT_MIN_VAL_FORMAT
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string DEFAULT_FORMAT_ => throw new NotImplementedException();
 
-        int IStringParseable<TimeDate>.objectLength
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string DEFAULT_MIN_VAL_FORMAT => throw new NotImplementedException();
 
-        int IComparable<TimeDate>.CompareTo(TimeDate other)
+        public int CompareTo(TimeDate other)
         {
             throw new NotImplementedException();
         }
 
-        TimeDate IStringParseable<TimeDate>.ParseToObjectType(string str)
+        public TimeDate ParseToObjectType(string str)
         {
             throw new NotImplementedException();
         }
 
-        string IStringParseable<TimeDate>.ParseToString(TimeDate obj)
+        public string ParseToString(TimeDate obj)
         {
             throw new NotImplementedException();
         }
