@@ -12,6 +12,7 @@ namespace Proyecto01
 
     static class Program
     {
+        public static string APPLICATION_TABLES_PATH = "";
         /// <summary>
         /// Punto de entrada principal para la aplicación.
         /// </summary>
