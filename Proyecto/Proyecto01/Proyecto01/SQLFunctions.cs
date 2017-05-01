@@ -115,6 +115,16 @@ namespace Proyecto01
         public static void Select(string selectInstructions, DataGridView outputGridView)
         {
 
+
+
+
+
+
+
+
+
+
+
             BTree<Int, Row> ramBTree = new BTree<Int, Row>(5, new Row());
 
             ramBTree.Search(new Int());
@@ -124,6 +134,14 @@ namespace Proyecto01
 
             //foreach(Int in ramBTree.)
 
+
+
+
+
+
+
+
+            // Idea basica para el select....
             Row row = new Row();
 
             DataGridViewRow dataGridViewRow = new DataGridViewRow();
@@ -134,10 +152,7 @@ namespace Proyecto01
             {
                 Row rowToAdd = ramBTree.Search(key).value;
 
-                rowToAdd.columnTypeOrder.Enqueue(ColumnType.INT);
-
-
-                string[] rowInString = new string[] {key.ParseToString(key), ramBTree.Search(key)}
+                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString()));
             }
             
             
