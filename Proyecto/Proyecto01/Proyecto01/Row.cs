@@ -8,10 +8,10 @@ using DataStructuresURL_3._0;
 namespace Proyecto01
 {
 
-    enum ColumnType { INT, VARCHAR, TIMEDATE}
+    enum ColumnType { INT, VARCHAR, TIMEDATE }
     class Row : IStringParseable<Row>
     {
-        
+
         public Dictionary<string, Int> intColumnsDictionary;
         public Dictionary<string, Varchar> varcharColumnsDictionary;
         public Dictionary<string, TimeDate> timeDateColumnsDictionary;
@@ -25,9 +25,34 @@ namespace Proyecto01
             int rowSize = CountColums();
             string[] stringRow = new string[rowSize];
 
-            for(int i = 0; i < rowSize; i++)
+            for (int i = 0; i < rowSize; i++)
             {
-                switch(columnTypeOrder[i])
+                switch (columnTypeOrder[i])
+                {
+                    case ColumnType.INT:
+                        stringRow[i] = intColumnsDictionary[columnNames[i]].ParseToString();
+                        break;
+                    case ColumnType.VARCHAR:
+                        stringRow[i] = varcharColumnsDictionary[columnNames[i]].ParseToString();
+                        break;
+                    case ColumnType.TIMEDATE:
+                        stringRow[i] = timeDateColumnsDictionary[columnNames[i]].ParseToString();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        public string[] RowValuesToString(string keyValue)
+        {
+            int rowSize = 1 + CountColums();
+            string[] stringRow = new string[rowSize];
+
+
+            stringRow[0] = keyValue;
+            for (int i = 1; i < rowSize; i++)
+            {
+                switch (columnTypeOrder[i])
                 {
                     case ColumnType.INT:
                         stringRow[i] = intColumnsDictionary[columnNames[i]].ParseToString();
@@ -43,7 +68,9 @@ namespace Proyecto01
                 }
             }
 
-            return new string[10];
+
+
+            return stringRow;
         }
         public string DEFAULT_FORMAT_
         {
@@ -72,6 +99,11 @@ namespace Proyecto01
         }
 
         public Row ParseToObjectType(string str)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ParseToString()
         {
             throw new NotImplementedException();
         }
