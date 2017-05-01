@@ -7,12 +7,44 @@ using DataStructuresURL_3._0;
 
 namespace Proyecto01
 {
+
+    enum ColumnType { INT, VARCHAR, TIMEDATE}
     class Row : IStringParseable<Row>
     {
         
-        public Dictionary<string, Int> intColumnsDictionary = new Dictionary<string, Int>();
+        public Dictionary<string, Int> intColumnsDictionary;
         public Dictionary<string, Varchar> varcharColumnsDictionary;
         public Dictionary<string, TimeDate> timeDateColumnsDictionary;
+
+        public List<ColumnType> columnTypeOrder;
+        public List<string> columnNames;
+
+        public string[] RowValuesToString()
+        {
+            int rowSize = CountColums();
+            string[] stringRow = new string[rowSize];
+
+            for(int i = 0; i < rowSize; i++)
+            {
+                switch(columnTypeOrder[i])
+                {
+                    case ColumnType.INT:
+                        stringRow[i] = intColumnsDictionary[columnNames[i]].ParseToString();
+                        break;
+                    case ColumnType.VARCHAR:
+                        stringRow[i] = varcharColumnsDictionary[columnNames[i]].ParseToString();
+                        break;
+                    case ColumnType.TIMEDATE:
+                        stringRow[i] = timeDateColumnsDictionary[columnNames[i]].ParseToString();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return new string[10];
+        }
+
 
         public int objectLength => throw new NotImplementedException();
 
