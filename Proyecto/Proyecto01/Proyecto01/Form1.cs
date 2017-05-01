@@ -14,26 +14,38 @@ namespace Proyecto01
     public partial class Form1 : Form
     {
         StreamReader dictionary;
-        string[] keyWords;
+        ReservedWord[] keyWords;
         public Form1()
         {
             InitializeComponent();
             dictionary = new StreamReader(new FileStream("C:/microSQL/microSQL.ini", FileMode.Open), new UTF8Encoding());
-            keyWords = new string[9];
-            FindKeywords();
+            keyWords = new ReservedWord[9];
+            keyWords = ReservedWord.FindKeywords(dictionary);
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
-            this.PaintKeyword(keyWords[0], Color.Blue, 0);
-            this.PaintKeyword(keyWords[1], Color.Blue, 0);
-            this.PaintKeyword(keyWords[2], Color.Blue, 0);
-            this.PaintKeyword(keyWords[3], Color.Blue, 0);
-            this.PaintKeyword(keyWords[4], Color.Blue, 0);
-            this.PaintKeyword(keyWords[5], Color.Blue, 0);
-            this.PaintKeyword(keyWords[6], Color.Blue, 0);
-            this.PaintKeyword(keyWords[7], Color.Blue, 0);
-            this.PaintKeyword(keyWords[8], Color.Blue, 0);
+            // Por si escribe con las originales
+            this.PaintKeyword(keyWords[0].originalReservedWord, Color.Blue, 0);
+            this.PaintKeyword(keyWords[1].originalReservedWord, Color.Blue, 0);
+            this.PaintKeyword(keyWords[2].originalReservedWord, Color.Blue, 0);
+            this.PaintKeyword(keyWords[3].originalReservedWord, Color.Blue, 0);
+            this.PaintKeyword(keyWords[4].originalReservedWord, Color.Blue, 0);
+            this.PaintKeyword(keyWords[5].originalReservedWord, Color.Blue, 0);
+            this.PaintKeyword(keyWords[6].originalReservedWord, Color.Blue, 0);
+            this.PaintKeyword(keyWords[7].originalReservedWord, Color.Blue, 0);
+            this.PaintKeyword(keyWords[8].originalReservedWord, Color.Blue, 0);
+
+            //O con su traduccion
+            this.PaintKeyword(keyWords[0].translation, Color.Blue, 0);
+            this.PaintKeyword(keyWords[1].translation, Color.Blue, 0);
+            this.PaintKeyword(keyWords[2].translation, Color.Blue, 0);
+            this.PaintKeyword(keyWords[3].translation, Color.Blue, 0);
+            this.PaintKeyword(keyWords[4].translation, Color.Blue, 0);
+            this.PaintKeyword(keyWords[5].translation, Color.Blue, 0);
+            this.PaintKeyword(keyWords[6].translation, Color.Blue, 0);
+            this.PaintKeyword(keyWords[7].translation, Color.Blue, 0);
+            this.PaintKeyword(keyWords[8].translation, Color.Blue, 0);
         }
 
         private void PaintKeyword(string word, Color color, int startIndex)
@@ -55,6 +67,11 @@ namespace Proyecto01
 
         private void runButton_Click(object sender, EventArgs e)
         {
+            //SQLTextParser.GetInsertInstructions(richTextBox1);
+            //SQLTextParser.GetSelectInstructions(richTextBox1);
+            //SQLTextParser.GetDeleteInstructions(richTextBox1);
+            SQLTextParser.GetUpdateInstructions(richTextBox1);
+
             //Sera una cola
             Queue<SQLCommands> commandsToExecute = SQLTextParser.ReadActions(richTextBox1);
             
@@ -64,26 +81,5 @@ namespace Proyecto01
             }
         }
 
-        private void FindKeywords()
-        {
-            string line = "";
-            string correctedKeyWord = "";
-            int i = 0;
-            while (!dictionary.EndOfStream)
-            {
-                line = dictionary.ReadLine();
-                var keyWordsInFile = line.Split(',');
-                for (int j = 0; j < keyWordsInFile[1].Length; j++)
-                {
-                    keyWordsInFile[1] = keyWordsInFile[1].Trim();
-                    if (keyWordsInFile[1][j] != '<' && keyWordsInFile[1][j] != '>')
-                        correctedKeyWord += keyWordsInFile[1][j];
-                }
-                keyWords[i] = correctedKeyWord;
-                correctedKeyWord = "";
-                i++;
-            }
-            dictionary.Dispose();
-        }
     }
 }
