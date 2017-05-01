@@ -126,10 +126,6 @@ namespace Proyecto01
                         {
                             //columnName, columnName,columnName||tableName||columnaAFiltrar,valorABuscar
                             case "SELECT":
-
-
-                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
-
                                 // Aumentar i para empezar a tomar despues del "SELECT"
                                 i++;
 
@@ -242,9 +238,6 @@ namespace Proyecto01
 
                             //tableName||columnaAFiltrar,valorABuscar
                             case "DELETE":
-
-                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
-
                                 //Aumentar i para tomar despues de "DELETE FROM"
                                 i++;
 
@@ -285,9 +278,6 @@ namespace Proyecto01
 
                             //tableName || columnName,type,specialAttribute|columnName,type,specialAttribute
                             case "CREATE TABLE":
-
-                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
-
                                 //Aumentar i para empezar a analizar despues de CREATE TABLE
                                 i++;
 
@@ -329,9 +319,6 @@ namespace Proyecto01
 
                                 //tableName
                             case "DROP TABLE":
-
-                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
-
                                 //Aumentar i para empezar a analizar despues de DROP TABLE
                                 i++;
 
@@ -343,9 +330,6 @@ namespace Proyecto01
 
                             //tableName||columnName,columnName,columnName||value,value,value
                             case "INSERT INTO":
-
-                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
-
                                 // Aumentar i para empezar a leer despues del "INSERT INTO"
                                 i++;
 
@@ -411,9 +395,6 @@ namespace Proyecto01
 
                                 //tableName||columnName,newValue||valorLlavePrimaria
                             case "UPDATE":
-
-                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
-
                                 // Aumentar i para empezar a leer despues del UPDATE
                                 i++;
 
