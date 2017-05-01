@@ -77,8 +77,10 @@ namespace Proyecto01
             
             while (commandsToExecute.Count != 0)
             {
-                SQLFunctions.ExecuteCommand(commandsToExecute.Dequeue(), richTextBox1);
+                SQLFunctions.ExecuteCommand(commandsToExecute.Dequeue(), richTextBox1, outputGridView);
             }
+
+            
         }
 
     }
