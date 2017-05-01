@@ -14,15 +14,33 @@ namespace Proyecto01
         public Dictionary<string, Varchar> varcharColumnsDictionary;
         public Dictionary<string, TimeDate> timeDateColumnsDictionary;
 
-        public int objectLength => throw new NotImplementedException();
-
-        public string DEFAULT_FORMAT_ => throw new NotImplementedException();
-
-        public string DEFAULT_MIN_VAL_FORMAT => throw new NotImplementedException();
-
-        public Row ParseToObjectType(string str)
+        public int objectLength
         {
-            throw new NotImplementedException();
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string DEFAULT_FORMAT_
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string DEFAULT_MIN_VAL_FORMAT
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int CountColums()
+        {
+            return intColumnsDictionary.Count + varcharColumnsDictionary.Count + timeDateColumnsDictionary.Count;
         }
 
         public string ParseToString(Row obj)
@@ -30,12 +48,9 @@ namespace Proyecto01
             throw new NotImplementedException();
         }
 
-
-
-
-        public int CountColums()
+        public Row ParseToObjectType(string str)
         {
-            return intColumnsDictionary.Count + varcharColumnsDictionary.Count + timeDateColumnsDictionary.Count;
+            throw new NotImplementedException();
         }
     }
 }
