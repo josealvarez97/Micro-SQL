@@ -114,8 +114,8 @@ namespace Proyecto01
             int i = 0;
             while (i < lines.Length)
             {
-
-                while (j < keyWords.Length)
+                // Que solo lea el rich mientras exista texto en el rich
+                while (j < keyWords.Length && i < lines.Length)
                 {
                     // ME interesa solo tomar la palabra "DELETE" de "DELETE FROM" para el switch
                     if (lines[i].Trim() == keyWords[2].originalReservedWord + " " + keyWords[1].originalReservedWord || lines[i].Trim() == keyWords[2].translation + " " + keyWords[1].translation)
@@ -162,7 +162,7 @@ namespace Proyecto01
                                     i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
 
 
-                                    selectInstructions += lines[i].Trim() /*tableName*/+ "||";
+                                    selectInstructions += lines[i].Trim() /*tableName*/;
 
                                     //Aumentar i para empezar a tomar despues de la palabra concatenada
 
@@ -170,23 +170,30 @@ namespace Proyecto01
 
                                     i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
 
-                                    // Si hay para filtrar pues lo leo
-                                    if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/|| lines[i].Trim().ToUpper() == keyWords[3].translation)
+
+                                    if (i < lines.Length)
                                     {
-                                        //Aumentar i para empezar a tomar despues de "WHERE"
-                                        i++;
+                                        // Si hay para filtrar pues lo leo
+                                        if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/|| lines[i].Trim().ToUpper() == keyWords[3].translation)
+                                        {
+                                            //Aumentar i para empezar a tomar despues de "WHERE"
+                                            i++;
 
-                                        i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+                                            i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
 
-                                        // Separo para ver el valor a buscar en determinada columna
-                                        var valuesToSelect = lines[i].Split('=');
+                                            selectInstructions += "||";
 
-                                        valuesToSelect[0] = valuesToSelect[0].Trim();
-                                        valuesToSelect[1] = valuesToSelect[1].Trim();
+                                            // Separo para ver el valor a buscar en determinada columna
+                                            var valuesToSelect = lines[i].Split('=');
 
-                                        selectInstructions += valuesToSelect[0] /*Columna a Filtrar*/ + ",";
-                                        selectInstructions += valuesToSelect[1] /*Valor a Buscar*/;
+                                            valuesToSelect[0] = valuesToSelect[0].Trim();
+                                            valuesToSelect[1] = valuesToSelect[1].Trim();
+
+                                            selectInstructions += valuesToSelect[0] /*Columna a Filtrar*/ + ",";
+                                            selectInstructions += valuesToSelect[1] /*Valor a Buscar*/;
+                                        }
                                     }
+
 
                                 }
 
@@ -503,6 +510,392 @@ namespace Proyecto01
                 }
             }
             return i;
+        }
+
+
+
+        public static Queue<string> ReadInstructions(RichTextBox richTextBox)
+        {
+            Queue<string> instructionsQueue = new Queue<string>(); 
+            string createTableInstructions = "";
+            string selectInstructions = "";
+            string deleteInstructions = "";
+            string dropTableInstructions = "";
+            string insertInstructions = "";
+            string updateInstructions = "";
+
+            // Leer rich textBox
+
+            var lines = richTextBox.Text.Split('\n');
+            int j = 0;
+            int i = 0;
+            while (i < lines.Length)
+            {
+                // Que solo lea el rich mientras exista texto en el rich
+                while (j < keyWords.Length && i < lines.Length)
+                {
+                    // ME interesa solo tomar la palabra "DELETE" de "DELETE FROM" para el switch
+                    if (lines[i].Trim() == keyWords[2].originalReservedWord + " " + keyWords[1].originalReservedWord || lines[i].Trim() == keyWords[2].translation + " " + keyWords[1].translation)
+                    {
+                        var getDeleteWord = lines[i].Split();
+
+                        lines[i] = getDeleteWord[0].Trim();
+                    }
+                    if (lines[i].Trim() == keyWords[j].originalReservedWord || lines[i].Trim() == keyWords[j].translation)
+                    {
+                        switch (keyWords[j].originalReservedWord)
+                        {
+                            //columnName, columnName,columnName||tableName||columnaAFiltrar,valorABuscar
+                            case "SELECT":
+                                // Aumentar i para empezar a tomar despues del "SELECT"
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                // Si NO es asterisco pues tomo todos los nombres de las columnas
+                                if (lines[i].Trim() != "*")
+                                {
+
+                                    while (lines[i] != keyWords[1].originalReservedWord /*FROM*/ || lines[i] != keyWords[1].translation)
+                                    {
+                                        lines[i] = lines[i].Trim();
+                                        lines[i] = lines[i].TrimEnd(',');
+
+                                        if (lines[i + 1] != keyWords[1].originalReservedWord /*FROM*/ || lines[i + 1] != keyWords[1].translation)
+                                            selectInstructions += lines[i] + ",";
+                                        else
+                                            selectInstructions += lines[i] + "||";
+
+                                        //Aumentar i para empezar a tomar despues de la palabra concatenada
+
+                                        i++;
+
+                                        i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+                                    }
+
+                                    //Aumentar i para empezar a tomar despues de "FROM"
+                                    i++;
+
+                                    i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+
+                                    selectInstructions += lines[i].Trim() /*tableName*/;
+
+                                    //Aumentar i para empezar a tomar despues de la palabra concatenada
+
+                                    i++;
+
+                                    i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+
+                                    if (i < lines.Length)
+                                    {
+                                        // Si hay para filtrar pues lo leo
+                                        if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/|| lines[i].Trim().ToUpper() == keyWords[3].translation)
+                                        {
+                                            //Aumentar i para empezar a tomar despues de "WHERE"
+                                            i++;
+
+                                            i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                            selectInstructions += "||";
+
+                                            // Separo para ver el valor a buscar en determinada columna
+                                            var valuesToSelect = lines[i].Split('=');
+
+                                            valuesToSelect[0] = valuesToSelect[0].Trim();
+                                            valuesToSelect[1] = valuesToSelect[1].Trim();
+
+                                            selectInstructions += valuesToSelect[0] /*Columna a Filtrar*/ + ",";
+                                            selectInstructions += valuesToSelect[1] /*Valor a Buscar*/;
+                                        }
+                                    }
+
+
+                                }
+
+
+                                else
+                                {
+
+                                    // Concatenar el asterisco
+                                    selectInstructions += lines[i].Trim() /* * */ + "||";
+
+                                    //Aumentar i para empezar a tomar despues de "*"
+                                    i++;
+
+                                    i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                    //Aumentar i para empezar a tomar despues de "FROM"
+                                    i++;
+
+                                    i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                    selectInstructions += lines[i].Trim() /* Table Name*/;
+
+                                    //Aumentar i para empezar a tomar despues de la palabra concatenada
+
+                                    i++;
+
+                                    i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                    if (i < lines.Length)
+                                    {
+                                        // Si hay para filtrar pues lo leo
+                                        if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/|| lines[i].Trim().ToUpper() == keyWords[3].translation)
+                                        {
+                                            //Aumentar i para empezar a tomar despues de "WHERE"
+                                            i++;
+
+                                            i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                            selectInstructions += "||";
+
+                                            // Separo para ver el valor a buscar en determinada columna
+                                            var valuesToSelect = lines[i].Split('=');
+
+                                            valuesToSelect[0] = valuesToSelect[0].Trim();
+                                            valuesToSelect[1] = valuesToSelect[1].Trim();
+
+                                            selectInstructions += valuesToSelect[0] /*Columna a Filtrar*/ + ",";
+                                            selectInstructions += valuesToSelect[1] /*Valor a Buscar*/;
+                                        }
+                                    }
+                                }
+                                instructionsQueue.Enqueue(selectInstructions);
+                                selectInstructions = "";
+                                break;
+
+                            //tableName||columnaAFiltrar,valorABuscar
+                            case "DELETE":
+                                //Aumentar i para tomar despues de "DELETE FROM"
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                deleteInstructions += lines[i].Trim();
+
+                                //Aumentar i para empezar a tomar despues de la palabra concatenada
+
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                // Si hay para filtrar pues lo leo
+                                if (i < lines.Length)
+                                {
+                                    if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/|| lines[i].Trim().ToUpper() == keyWords[3].translation)
+                                    {
+                                        //Aumentar i para empezar a tomar despues de "WHERE"
+                                        i++;
+
+                                        i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                        deleteInstructions += "||";
+
+                                        // Separo para ver el valor a buscar en determinada columna
+                                        var valuesToSelect = lines[i].Split('=');
+
+                                        valuesToSelect[0] = valuesToSelect[0].Trim();
+                                        valuesToSelect[1] = valuesToSelect[1].Trim();
+
+                                        deleteInstructions += valuesToSelect[0] /*Columna a Filtrar*/ + ",";
+                                        deleteInstructions += valuesToSelect[1] /*Valor a Buscar*/;
+
+                                    }
+                                }
+                                instructionsQueue.Enqueue(deleteInstructions);
+                                deleteInstructions = "";
+                                break;
+
+                            //tableName || columnName,type,specialAttribute|columnName,type,specialAttribute
+                            case "CREATE TABLE":
+                                //Aumentar i para empezar a analizar despues de CREATE TABLE
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                createTableInstructions += lines[i] + "||";
+
+
+                                //Aumentar i para empezar a tomar despues de la palabra concatenada
+
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                //Saltar (
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                while (lines[i] != ")")
+                                {
+                                    var columnsInfo = lines[i].Split(' ');
+
+                                    if (columnsInfo.Length > 2)
+                                        createTableInstructions += columnsInfo[0].Trim() + "," + columnsInfo[1].Trim() + "," + "KEY" + "|";
+                                    else
+                                        createTableInstructions += columnsInfo[0].Trim() + "," + columnsInfo[1].TrimEnd(',') + "," + "NULL" + "|";
+
+                                    //Aumentar i para empezar a tomar despues de la palabra concatenada
+                                    i++;
+
+                                    i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                }
+
+                                // Solo quito el pipe del final para mantener el formato
+                                createTableInstructions = createTableInstructions.TrimEnd('|');
+
+                                instructionsQueue.Enqueue(createTableInstructions);
+                                createTableInstructions = "";
+                                break;
+
+                            //tableName
+                            case "DROP TABLE":
+                                //Aumentar i para empezar a analizar despues de DROP TABLE
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                dropTableInstructions += lines[i].Trim();
+
+
+                                instructionsQueue.Enqueue(dropTableInstructions);
+                                dropTableInstructions = "";
+                                break;
+
+                            //tableName||columnName,columnName,columnName||value,value,value
+                            case "INSERT INTO":
+                                // Aumentar i para empezar a leer despues del "INSERT INTO"
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                insertInstructions += lines[i].Trim() + "||";
+
+                                // Aumentar i para empezar a tomar despues de la palabra concatenada
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                // Aumentar i para pasar el (
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                while (lines[i] != ")")
+                                {
+                                    lines[i] = lines[i].TrimEnd(',');
+                                    if (lines[i + 1] != ")")
+                                        insertInstructions += lines[i].Trim() + ",";
+                                    else
+                                        insertInstructions += lines[i].Trim() + "||";
+
+                                    // Aumentar i para empezar a tomar despues de la palabra concatenada
+                                    i++;
+
+                                    i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+                                }
+
+                                // Aumentar i para ignora )
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                // Aumentar i para ignorar "VALUES"
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                // Aumentar i para pasar el (
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                while (lines[i] != ")")
+                                {
+                                    lines[i] = lines[i].TrimEnd(',');
+                                    lines[i] = lines[i].Trim("'".ToCharArray());
+                                    lines[i] = lines[i].Trim();
+                                    if (lines[i + 1] != ")")
+                                        insertInstructions += lines[i] + ",";
+                                    else
+                                        insertInstructions += lines[i].TrimEnd(',');
+
+                                    i++;
+
+                                    i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+                                }
+
+                                instructionsQueue.Enqueue(insertInstructions);
+                                insertInstructions = "";
+                                break;
+
+
+                            //tableName||columnName,newValue||valorLlavePrimaria
+                            case "UPDATE":
+                                // Aumentar i para empezar a leer despues del UPDATE
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                updateInstructions += lines[i].Trim() + "||";
+
+                                // Aumentar i para empezar a leer despues del dato concatenado
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                // Aumentar i para saltar el "SET"
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                var newValueToSet = lines[i].Trim().Split('=');
+
+                                newValueToSet[0] = newValueToSet[0].Trim();
+                                newValueToSet[1] = newValueToSet[1].Trim();
+                                newValueToSet[1] = newValueToSet[1].Trim("'".ToCharArray());
+                                newValueToSet[1] = newValueToSet[1].Trim();
+
+                                updateInstructions += newValueToSet[0] + "," + newValueToSet[1] + "||";
+
+                                // Aumentar i para empezar a leer despues del dato concatenado
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                // Aumentar i parar saltar el "WHERE"
+                                i++;
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
+                                var primaryKeyValue = lines[i].Trim().Split('=');
+
+                                primaryKeyValue[1] = primaryKeyValue[1].Trim();
+                                primaryKeyValue[1] = primaryKeyValue[1].Trim("'".ToCharArray());
+
+                                updateInstructions += primaryKeyValue[1];
+
+                                instructionsQueue.Enqueue(updateInstructions);
+                                updateInstructions = "";
+                                break;
+                        }
+                    }
+                    else
+                        j++;
+                }
+                i++; // Si no se encuentra hay que comparar con la otra linea
+                j = 0; // Se pone en 0 para poder volver a comparar la palabra de la linea con la del arreglo desde el inicio.
+            }
+
+
+            
+
+
+            return instructionsQueue;
         }
     }
 }

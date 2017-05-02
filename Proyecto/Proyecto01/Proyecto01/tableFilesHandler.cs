@@ -29,8 +29,8 @@ namespace Proyecto01
             {
                 StreamReader reader = new StreamReader(filestream);
                 string line = reader.ReadLine();
-                string[] fields = line.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
-                string[] columns = fields[1].Split('|');
+                //string[] fields = line.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+                string[] columns = line.Split('|');
 
                 for(int i = 0; i < columns.Length; i++)
                 {
@@ -59,9 +59,9 @@ namespace Proyecto01
             {
                 StreamReader reader = new StreamReader(filestream);
                 string line = reader.ReadLine();
-                string[] fields = line.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+                //string[] fields = line.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
 
-                string columnInfo = fields[1];
+                string columnInfo = line;
 
                 Row rowModel = new Row(columnInfo);
                 return rowModel;
@@ -78,6 +78,8 @@ namespace Proyecto01
             {
                 StreamWriter writer = new StreamWriter(filestream);
                 writer.Write(tableInfo);
+                writer.Flush();
+                writer.Dispose();
             }
         }
 

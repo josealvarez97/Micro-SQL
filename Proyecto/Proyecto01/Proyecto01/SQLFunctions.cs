@@ -40,6 +40,37 @@ namespace Proyecto01
 
             }
         }
+
+
+        // modelo para utilizar una cola de instrucciones
+        public static void ExecuteCommand(SQLCommands comando, string instruction, DataGridView outputGridView)
+        {
+            //ExecuteCommand(SQLTextParser.ReadAction(richTextBox))
+            switch (comando)
+            {
+                case SQLCommands.createTable:
+                    CreateTable(instruction);
+                    break;
+                case SQLCommands.select:
+                    Select(instruction, outputGridView);
+                    break;
+                case SQLCommands.delete:
+                    Delete(instruction);
+                    break;
+                case SQLCommands.dropTable:
+                    DropTable(instruction);
+                    break;
+                case SQLCommands.insert:
+                    Insert(instruction);
+                    break;
+                case SQLCommands.updateTable:
+                    UpdateTable(instruction);
+                    break;
+                default:
+                    break;
+
+            }
+        }
         public static void CreateTable(string createTableInstructions)
         {
             /*string createTableInstructions = "tableName||columnName,type,specialAttribute|columnName,type,specialAttribute";*/
@@ -51,8 +82,13 @@ namespace Proyecto01
             string tableName = createTableFields[0];
             //Separar columnas con arreglo columns
             string[] columns = createTableFields[1].Split('|');
+            string rowInfo = createTableFields[1];
 
-            Row rowModel = new Row(createTableFields[1]);
+            Row rowModel = new Row(rowInfo);
+
+
+            string btreeFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".arbolb";
+            string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
             //Row rowModel = new Row();
 
 
@@ -100,39 +136,68 @@ namespace Proyecto01
                     switch (columnAttributes[1])
                     {
                         case "INT":
-                            BTree<Int, Row> intTableBTree = new BTree<Int, Row>(order, Program.APPLICATION_TABLES_PATH + tableName + ".arbolb", rowModel);
+                            BTree<Int, Row> intTableBTree = new BTree<Int, Row>(order, btreeFilePath, rowModel);
+                            intTableBTree.Create();
                             break;
                         case "VARCHAR-100":
-                            BTree<Varchar, Row> varcharTableBTree = new BTree<Varchar, Row>(order, Program.APPLICATION_TABLES_PATH + tableName + ".arbolb", rowModel);
+                            BTree<Varchar, Row> varcharTableBTree = new BTree<Varchar, Row>(order, btreeFilePath, rowModel);
+                            varcharTableBTree.Create();
                             break;
                         case "DATETIME":
-                            BTree<TimeDate, Row> timeDateTableBTree = new BTree<TimeDate, Row>(order, Program.APPLICATION_TABLES_PATH + tableName + ".arbolb", rowModel);
+                            BTree<TimeDate, Row> timeDateTableBTree = new BTree<TimeDate, Row>(order, btreeFilePath, rowModel);
+                            timeDateTableBTree.Create();
                             break;
                         default:
                             break;
                     }
             }
+
+            tableFilesHandler.CreateTableFile(tableFilePath, rowInfo);
         }
 
         public static void Select(string selectInstructions, DataGridView outputGridView)
         {
-
+            outputGridView.Columns.Clear();
             // Select instructions model
             //columnName, columnName,columnName||tableName||columnaAFiltrar,valorABuscar
 
             // Cocinamos la data... para digerirla mejor...
-            string[] selectInstructionsFields = selectInstructions.Split("||".ToCharArray());
+            string[] selectInstructionsFields = selectInstructions.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
             string[] columnNamesToSelect = selectInstructionsFields[0].Split(',');
             string tableName = selectInstructionsFields[1];
-            string[] filterFields = selectInstructionsFields[2].Split(',');
-            string columnToFilter = filterFields[0];
-            string valueToSeek = filterFields[1];
+            string[] filterFields;
+            string columnToFilter = "";
+            string valueToSeek = "";
+            bool seekSpecificValue;
+
+            if(selectInstructionsFields.Length > 2)
+            {
+                filterFields = selectInstructionsFields[2].Split(',');
+                columnToFilter = filterFields[0];
+                valueToSeek = filterFields[1];
+                seekSpecificValue = true;
+            }
+            else
+            {
+                seekSpecificValue = false;
+            }
+
+          
+
             string btreeFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".arbolb";
             string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
             string typeOfKey = tableFilesHandler.ReadTypeOfKey(tableFilePath);
             Row rowModel = tableFilesHandler.GetRowModelFromFile(tableFilePath);
             Row rowToAdd;
             int order = 7;
+
+            // AÑADIR COLS AL GRID
+            for (int i = 0; i < rowModel.columnNames.Count; i++)
+            {
+                if (columnNamesToSelect.Contains<string>(rowModel.columnNames[i]) || columnNamesToSelect[0] == "*" )
+                    outputGridView.Columns.Add(rowModel.columnNames[i], rowModel.columnNames[i]);
+            }
+
 
 
             // Como siempre dependemos del type of key para el codigo sobre jalar el arbol a RAM
@@ -147,12 +212,18 @@ namespace Proyecto01
                         // Recibimos row correspondiente a una key determinada
                         rowToAdd = ramBTreeInt.Search(key).value;
 
-                        // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
-                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek))
+                        // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview, O QUE NO HAYAN RESTRICCIONES ( seekSpecificValue == false)
+                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek) || seekSpecificValue == false)
                             if (columnNamesToSelect[0] != "*")
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString(), columnNamesToSelect));
+                            {
+
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(columnNamesToSelect));
+                            }
                             else
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString()));
+                            {
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString());
+                            }
+
 
                     }
                     break;
@@ -166,11 +237,15 @@ namespace Proyecto01
                         rowToAdd = ramBTreeVarchar.Search(key).value;
 
                         // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
-                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek))
+                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek) || seekSpecificValue == false)
                             if (columnNamesToSelect[0] != "*")
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString(), columnNamesToSelect));
+                            {
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(columnNamesToSelect));
+                            }
                             else
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString()));
+                            {
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString());
+                            }
                     }
                     break;
                 case "DATETIME":
@@ -183,11 +258,15 @@ namespace Proyecto01
                         rowToAdd = ramBTreeTimeDate.Search(key).value;
 
                         // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
-                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek))
+                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek) || seekSpecificValue == false)
                             if (columnNamesToSelect[0] != "*")
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString(), columnNamesToSelect));
+                            {
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(columnNamesToSelect));
+                            }
                             else
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString()));
+                            {
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString());
+                            }
                     }
                     break;
             }
@@ -206,7 +285,7 @@ namespace Proyecto01
         {
             //string insertInstructions = "tableName||columnName1,columnName2,columnName3||value1,value2,value3;
 
-            string[] insertFields = insertInstructions.Split("||".ToCharArray());
+            string[] insertFields = insertInstructions.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
             string tableName = insertFields[0];
 
             string[] columns = insertFields[1].Split(',');
@@ -226,17 +305,21 @@ namespace Proyecto01
             Row rowToAdd = new Row();
             for (int i = 0; i < columns.Length; i++)
             {
+                rowToAdd.columnNames.Add(columns[i]);
                 // Insert corresponding value into Row
-                switch (values[i])
+                switch (rowModel.columnTypeOrder[i])
                 {
-                    case "INT":
+                    case ColumnType.INT:
                         rowToAdd.intColumnsDictionary.Add(columns[i], new Int().ParseToObjectType(values[i]));
+                        rowToAdd.columnTypeOrder.Add(ColumnType.INT);
                         break;
-                    case "VARCHAR-100":
+                    case ColumnType.VARCHAR:
                         rowToAdd.varcharColumnsDictionary.Add(columns[i], new Varchar().ParseToObjectType(values[i]));
+                        rowToAdd.columnTypeOrder.Add(ColumnType.VARCHAR);
                         break;
-                    case "TIMEDATE":
+                    case ColumnType.TIMEDATE:
                         rowToAdd.timeDateColumnsDictionary.Add(columns[i], new TimeDate().ParseToObjectType(values[i]));
+                        rowToAdd.columnTypeOrder.Add(ColumnType.TIMEDATE);
                         break;
                     default:
                         break;

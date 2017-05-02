@@ -1,0 +1,8 @@
+- Delete
+- DropTable *Isi pisi Solo eliminar archivo.
+- UpdateTable *Search
+- Explorador
+
+- Exportar a csv lo que este en el grid (BOTON)
+
+- trys y catch (Mensajes por si no respeta la sintaxis)

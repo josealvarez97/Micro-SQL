@@ -1,0 +1,100 @@
+-	Formar archivos .tabla. Y metodos para extraer informacion util... (GetRowModelFromFile...)
+-	Realizar metodos de intefaces a clases Int, Varchar y TimeDate
+- 	Hay metodos en Row que creo que tambien faltan...
+-	CreateTable no tiene agregado lo necesario para llenar listas de ColumnTypeOrder y ColumnNames...
+
+
+JEJE SALUDOSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+I HAVE THE POWER
+Trabajando prograaaaaaaaaaaaaaa diceeeeeeeeeeeeeeeeeeeeeee 
+
+
+HOLAHOLAHOLAHOLAHOLA 
+08/12/1997
+
+
+
+20 -> NOMBRE DE COLUMNA
+
+INT -> 11
+
+TIMEDATE -> 10
+
+VARCHAR -> 100 
+
+tamaño minimo aproximado de espacio requerido para guardar la info...
+
+20 * (#cols) + 11 * intDictionary.Count + 10 * timedateDictionary.count + 100 * varcharDictionary.count + (#cols)*3
+
+
+CREATE TABLE
+CARRO
+(
+ID INT PRIMARY KEY,
+MARCA VARCHAR(100),
+LINEA VARCHAR(100),
+SALIDAALMERCADO DATETIME,
+CABALLOSDEFUERZA INT
+)
+
+INSERT INTO
+CARRO
+(
+ID,
+MARCA,
+LINEA,
+SALIDAALMERCADO,
+CABALLOSDEFUERZA
+)
+VALUES
+(
+1,
+'HYUNDAI',
+'ELANTRA',
+'10/02/2016',
+250
+)
+
+INSERT INTO
+CARRO
+(
+ID,
+MARCA,
+LINEA,
+SALIDAALMERCADO,
+CABALLOSDEFUERZA
+)
+VALUES
+(
+2,
+'FERRARI',
+'DINO',
+'10/02/2016',
+250
+)
+
+
+SELECT
+ID,
+SALIDAALMERCADO,
+MARCA
+FROM
+CARRO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WHERE
+ID = 1
+

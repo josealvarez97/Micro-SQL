@@ -74,10 +74,11 @@ namespace Proyecto01
 
             //Sera una cola
             Queue<SQLCommands> commandsToExecute = SQLTextParser.ReadActions(richTextBox1);
+            Queue<string> instructionsToExecute = SQLTextParser.ReadInstructions(richTextBox1);
             
             while (commandsToExecute.Count != 0)
             {
-                SQLFunctions.ExecuteCommand(commandsToExecute.Dequeue(), richTextBox1, outputGridView);
+                SQLFunctions.ExecuteCommand(commandsToExecute.Dequeue(), instructionsToExecute.Dequeue(), outputGridView);
             }
 
             
