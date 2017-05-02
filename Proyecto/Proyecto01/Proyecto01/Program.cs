@@ -8,11 +8,11 @@ using DataStructuresURL_3._0;
 namespace Proyecto01
 {
     enum SQLCommands { createTable, select, delete, dropTable, insert, updateTable }
-    
+
 
     static class Program
     {
-        public static string APPLICATION_TABLES_PATH = "";
+        public static string APPLICATION_TABLES_PATH = "C:/microSQL/";
         /// <summary>
         /// Punto de entrada principal para la aplicación.
         /// </summary>
