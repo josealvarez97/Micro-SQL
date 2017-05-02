@@ -21,7 +21,7 @@ namespace Proyecto01
                     CreateTable(SQLTextParser.GetCreateTableInstructions(richTextBox));
                     break;
                 case SQLCommands.select:
-                    Select(SQLTextParser.GetSelectInstructions(richTextBox, outputGridView));
+                    Select(SQLTextParser.GetSelectInstructions(richTextBox), outputGridView);
                     break;
                 case SQLCommands.delete:
                     Delete(SQLTextParser.GetDeleteInstructions(richTextBox));
@@ -42,50 +42,52 @@ namespace Proyecto01
         }
         public static void CreateTable(string createTableInstructions)
         {
-
             /*string createTableInstructions = "tableName||columnName,type,specialAttribute|columnName,type,specialAttribute";*/
 
             // Separar tableName de Columnas con arreglo generalFields
-            string[] createTableFields = createTableInstructions.Split("||".ToCharArray());
+
+            string[] createTableFields = createTableInstructions.Split(new string[] { "||" },StringSplitOptions.RemoveEmptyEntries);// http://stackoverflow.com/questions/8928601/how-can-i-split-a-string-with-a-string-delimiter
+
             string tableName = createTableFields[0];
             //Separar columnas con arreglo columns
             string[] columns = createTableFields[1].Split('|');
 
-            Row rowModel = new Row();
+            Row rowModel = new Row(createTableFields[1]);
+            //Row rowModel = new Row();
 
 
 
 
             //Leer columnas de arreglo columns. PARA CREAR ROW MODEL
-            for (int i = 0; i < columns.Length; i++)
-            {
-                //Separar atributo de columnas con arreglo columnAttributes
-                string[] columnAttributes = columns[i].Split(',');
+            //for (int i = 0; i < columns.Length; i++)
+            //{
+            //    //Separar atributo de columnas con arreglo columnAttributes
+            //    string[] columnAttributes = columns[i].Split(',');
 
-                //Agregar columna correspondiente a nuestra tabla
-                switch (columnAttributes[1]/*type*/) // columnName en la 0, type en la 1, special attribute en la 2
-                {
-                    case "INT":
-                        rowModel.intColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new Int());
-                        break;
-                    case "VARCHAR-100":
-                        rowModel.varcharColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new Varchar());
-                        break;
-                    case "DATETIME":
-                        rowModel.timeDateColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new TimeDate());
-                        break;
-                    default:
-                        break;
-                }
+            //    //Agregar columna correspondiente a nuestra tabla
+            //    switch (columnAttributes[1]/*type*/) // columnName en la 0, type en la 1, special attribute en la 2
+            //    {
+            //        case "INT":
+            //            rowModel.intColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new Int());
+            //            break;
+            //        case "VARCHAR-100":
+            //            rowModel.varcharColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new Varchar());
+            //            break;
+            //        case "DATETIME":
+            //            rowModel.timeDateColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new TimeDate());
+            //            break;
+            //        default:
+            //            break;
+            //    }
 
-            }
+            //}
 
             //((IStringParseable<Row>)rowModel).ParseToObjectType(""); Cuando se implementa explicitamente la interfaz en una clase
 
 
-            
 
-            int order = 3 + rowModel.CountColums() / 3;//no sabemos que ponerle...
+
+            int order = 7; //no sabemos que ponerle...
             //Leer columnas de arreglo columns. PARA CREAR BTREE (o sea ahora solo buscamos la que tenga special attribute key...) 
             for (int i = 0; i < columns.Length; i++)
             {
@@ -115,47 +117,82 @@ namespace Proyecto01
         public static void Select(string selectInstructions, DataGridView outputGridView)
         {
 
+            // Select instructions model
+            //columnName, columnName,columnName||tableName||columnaAFiltrar,valorABuscar
+
+            // Cocinamos la data... para digerirla mejor...
+            string[] selectInstructionsFields = selectInstructions.Split("||".ToCharArray());
+            string[] columnNamesToSelect = selectInstructionsFields[0].Split(',');
+            string tableName = selectInstructionsFields[1];
+            string[] filterFields = selectInstructionsFields[2].Split(',');
+            string columnToFilter = filterFields[0];
+            string valueToSeek = filterFields[1];
+            string btreeFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".arbolb";
+            string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
+            string typeOfKey = tableFilesHandler.ReadTypeOfKey(tableFilePath);
+            Row rowModel = tableFilesHandler.GetRowModelFromFile(tableFilePath);
+            Row rowToAdd;
+            int order = 7;
 
 
-
-
-
-
-
-
-
-
-            BTree<Int, Row> ramBTree = new BTree<Int, Row>(5, new Row());
-
-            ramBTree.Search(new Int());
-
-            //outputGridView.
-
-
-            //foreach(Int in ramBTree.)
-
-
-
-
-
-
-
-
-            // Idea basica para el select....
-            Row row = new Row();
-
-            DataGridViewRow dataGridViewRow = new DataGridViewRow();
-            
-            outputGridView.Rows.Add(row.intColumnsDictionary);
-
-            foreach(Int key in ramBTree)
+            // Como siempre dependemos del type of key para el codigo sobre jalar el arbol a RAM
+            switch (typeOfKey)
             {
-                Row rowToAdd = ramBTree.Search(key).value;
+                case "INT":
+                    // Jalamos arbol a RAM
+                    BTree<Int, Row> ramBTreeInt = BTree<Int, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                    // Recorremos arbol, o sea, recorremos cada fila de la tabla
+                    foreach (Int key in ramBTreeInt)
+                    {
+                        // Recibimos row correspondiente a una key determinada
+                        rowToAdd = ramBTreeInt.Search(key).value;
 
-                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString()));
+                        // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
+                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek))
+                            if (columnNamesToSelect[0] != "*")
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString(), columnNamesToSelect));
+                            else
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString()));
+
+                    }
+                    break;
+                case "VARCHAR(100)":
+                    // Jalamos arbol a RAM
+                    BTree<Varchar, Row> ramBTreeVarchar = BTree<Varchar, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                    // Recorremos arbol, o sea, recorremos cada fila de la tabla
+                    foreach (Varchar key in ramBTreeVarchar)
+                    {
+                        // Recibimos row correspondiente a una key determinada
+                        rowToAdd = ramBTreeVarchar.Search(key).value;
+
+                        // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
+                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek))
+                            if (columnNamesToSelect[0] != "*")
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString(), columnNamesToSelect));
+                            else
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString()));
+                    }
+                    break;
+                case "DATETIME":
+                    // Jalamos arbol a RAM
+                    BTree<TimeDate, Row> ramBTreeTimeDate = BTree<TimeDate, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                    // Recorremos arbol, o sea, recorremos cada fila de la tabla
+                    foreach (TimeDate key in ramBTreeTimeDate)
+                    {
+                        // Recibimos row correspondiente a una key determinada
+                        rowToAdd = ramBTreeTimeDate.Search(key).value;
+
+                        // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
+                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek))
+                            if (columnNamesToSelect[0] != "*")
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString(), columnNamesToSelect));
+                            else
+                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString()));
+                    }
+                    break;
             }
-            
-            
+
+
         }
         public static void Delete(string deleteInstructions)
         {
@@ -168,7 +205,7 @@ namespace Proyecto01
         public static void Insert(string insertInstructions)
         {
             //string insertInstructions = "tableName||columnName1,columnName2,columnName3||value1,value2,value3;
-            
+
             string[] insertFields = insertInstructions.Split("||".ToCharArray());
             string tableName = insertFields[0];
 
@@ -182,7 +219,7 @@ namespace Proyecto01
             string keyType = tableFilesHandler.ReadTypeOfKey(tableFilePath);
 
             Row rowModel = tableFilesHandler.GetRowModelFromFile(tableFilePath);
-            int order = 3 + rowModel.CountColums() / 3;//no sabemos que ponerle...
+            int order = 7;//no sabemos que ponerle...
 
 
 

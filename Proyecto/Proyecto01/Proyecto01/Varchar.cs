@@ -9,19 +9,28 @@ namespace Proyecto01
 {
     class Varchar : IStringParseable<Varchar>, IComparable<Varchar>
     {
+        public string value { get; set; }
         public string DEFAULT_FORMAT_
         {
             get
             {
-                throw new NotImplementedException();
+                string defaultFormat = "";
+
+                for (int i = 0; i < 100; i++)
+                {
+                    defaultFormat += "~";
+                }
+                return defaultFormat;
             }
         }
 
+
+        // Es para los punteros, para cuando no apunten a nada...
         public string DEFAULT_MIN_VAL_FORMAT
         {
             get
-            {
-                throw new NotImplementedException();
+            {                
+                return int.MinValue.ToString();
             }
         }
 
@@ -29,28 +38,48 @@ namespace Proyecto01
         {
             get
             {
-                throw new NotImplementedException();
+                return 100;
             }
         }
 
         public int CompareTo(Varchar other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+                return 1;
+
+            return value.CompareTo(other.value);
         }
 
         public Varchar ParseToObjectType(string str)
         {
-            throw new NotImplementedException();
+            Varchar varcharInstance = new Varchar();
+            varcharInstance.value = str;
+
+            return varcharInstance;
         }
 
         public string ParseToString(Varchar obj)
         {
-            throw new NotImplementedException();
+            string stringOutput = obj.value;
+
+            while(stringOutput.Length != 100)
+            {
+                stringOutput = "~" + stringOutput;
+            }
+
+            return stringOutput;
         }
 
         public string ParseToString()
         {
-            throw new NotImplementedException();
+            string stringOutput = value;
+
+            while (stringOutput.Length != 100)
+            {
+                stringOutput = "~" + stringOutput;
+            }
+
+            return stringOutput;
         }
     }
 }

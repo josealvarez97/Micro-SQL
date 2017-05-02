@@ -9,11 +9,12 @@ namespace Proyecto01
 {
     class TimeDate : IStringParseable<TimeDate>, IComparable<TimeDate>
     {
+        public DateTime value;
         public string DEFAULT_FORMAT_
         {
             get
             {
-                throw new NotImplementedException();
+                return "dd/MM/yyyy";
             }
         }
 
@@ -21,7 +22,7 @@ namespace Proyecto01
         {
             get
             {
-                throw new NotImplementedException();
+                return int.MinValue.ToString();
             }
         }
 
@@ -29,27 +30,34 @@ namespace Proyecto01
         {
             get
             {
-                throw new NotImplementedException();
+                return 10;
             }
         }
 
         public int CompareTo(TimeDate other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+                return 1;
+
+            return value.CompareTo(other.value);
         }
 
         public TimeDate ParseToObjectType(string str)
         {
-            throw new NotImplementedException();
+            TimeDate timeDateInstance = new TimeDate();
+            timeDateInstance.value = DateTime.Parse(str);
+
+            return timeDateInstance;
+
         }
 
         public string ParseToString(TimeDate obj)
         {
-            throw new NotImplementedException();
+            return obj.value.ToString("dd/MM/yyyy");
         }
         public string ParseToString()
         {
-            throw new NotImplementedException();
+            return value.ToString("dd/MM/yyyy");
         }
     }
 }

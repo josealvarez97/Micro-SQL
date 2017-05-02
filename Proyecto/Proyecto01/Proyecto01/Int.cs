@@ -9,11 +9,14 @@ namespace Proyecto01
 {
     class Int : IStringParseable<Int>, IComparable<Int>
     {
+
+        public int value { get; set; }
+
         public string DEFAULT_FORMAT_
         {
             get
             {
-                throw new NotImplementedException();
+                return "00000000000";
             }
         }
 
@@ -21,7 +24,7 @@ namespace Proyecto01
         {
             get
             {
-                throw new NotImplementedException();
+                return int.MinValue.ToString();
             }
         }
 
@@ -29,28 +32,39 @@ namespace Proyecto01
         {
             get
             {
-                throw new NotImplementedException();
+                return 11;
             }
         }
 
         public int CompareTo(Int other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+                return 1;
+
+            return value.CompareTo(other.value);
         }
 
         public Int ParseToObjectType(string str)
         {
-            throw new NotImplementedException();
+            Int intInstance = new Int();
+            intInstance.value = int.Parse(str);
+            return intInstance;
         }
 
         public string ParseToString(Int obj)
         {
-            throw new NotImplementedException();
+            if (obj.value != int.MinValue)
+                return obj.value.ToString(DEFAULT_FORMAT_);
+            else
+                return int.MinValue.ToString();
         }
 
         public string ParseToString()
         {
-            throw new NotImplementedException();
+            if (value != int.MinValue)
+                return value.ToString(DEFAULT_FORMAT_);
+            else
+                return int.MinValue.ToString();
         }
     }
 }
