@@ -10,6 +10,12 @@ namespace Proyecto01
     class Varchar : IStringParseable<Varchar>, IComparable<Varchar>
     {
         public string value { get; set; }
+
+        public Varchar()
+        {
+            value = "";
+        }
+
         public string DEFAULT_FORMAT_
         {
             get

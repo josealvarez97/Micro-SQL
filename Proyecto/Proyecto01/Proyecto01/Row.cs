@@ -52,7 +52,7 @@ namespace Proyecto01
             //columnName,type,specialAttribute|columnName,type,specialAttribute
             string[] columns = rowModelSpecifications.Split('|');
 
-            for(int i = 0; i < columns.Length; i++)
+            for (int i = 0; i < columns.Length; i++)
             {
                 string[] columnsAttributes = columns[i].Split(',');
                 string columnName = columnsAttributes[0];
@@ -95,13 +95,13 @@ namespace Proyecto01
                 switch (columnTypeOrder[i])
                 {
                     case ColumnType.INT:
-                        stringRow[i] = intColumnsDictionary[columnNames[i]].ParseToString();
+                        stringRow[i] = intColumnsDictionary[columnNames[i]].value.ToString();
                         break;
                     case ColumnType.VARCHAR:
-                        stringRow[i] = varcharColumnsDictionary[columnNames[i]].ParseToString();
+                        stringRow[i] = varcharColumnsDictionary[columnNames[i]].value.ToString();
                         break;
                     case ColumnType.TIMEDATE:
-                        stringRow[i] = timeDateColumnsDictionary[columnNames[i]].ParseToString();
+                        stringRow[i] = timeDateColumnsDictionary[columnNames[i]].value.ToString("dd/MM/yyyy");
                         break;
                     default:
                         break;
@@ -140,6 +140,11 @@ namespace Proyecto01
         }
         public string[] RowValuesToString(string keyValue, string[] columnsToSelect)
         {
+            //// Removemos keyValue de columnsToSelect (si existe) porque... row no contiene keys.
+            //List<string> colsToSelectList = columnsToSelect.ToList<string>();
+            //colsToSelectList.Remove(keyValue);
+            //columnsToSelect = colsToSelectList.ToArray();
+
             // rowSize es igual al espacio de key mas el espacio de las columnas a seleccionar
             int rowSize = 1 + columnsToSelect.Length;
             // stringRow, nuestro string que simulara la misma row, pero valores en string.
@@ -155,15 +160,56 @@ namespace Proyecto01
                 {
                     case ColumnType.INT:
                         if (columnsToSelect.Contains<string>(columnNames[i])) //Como esta es sobrecarga del metodo es para filtro, solo añadimos a stringRow si el valor coincide con valoresToSelect...
-                            stringRow[stringRowCounter++] = intColumnsDictionary[columnNames[i]].ParseToString();
+                            stringRow[stringRowCounter++] = intColumnsDictionary[columnNames[i]].value.ToString();
                         break;
                     case ColumnType.VARCHAR:
                         if (columnsToSelect.Contains<string>(columnNames[i])) // Misma situacion
-                            stringRow[stringRowCounter++] = varcharColumnsDictionary[columnNames[i]].value;
+                            stringRow[stringRowCounter++] = varcharColumnsDictionary[columnNames[i]].value.ToString();
                         break;
                     case ColumnType.TIMEDATE:
                         if (columnsToSelect.Contains<string>(columnNames[i])) // Misma situacion
-                            stringRow[stringRowCounter++] = timeDateColumnsDictionary[columnNames[i]].ParseToString();
+                            stringRow[stringRowCounter++] = timeDateColumnsDictionary[columnNames[i]].value.ToString("dd/MM/yyyy");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+
+
+            return stringRow;
+        }
+
+        public string[] RowValuesToString(string[] columnsToSelect)
+        {
+            //// Removemos keyValue de columnsToSelect (si existe) porque... row no contiene keys.
+            //List<string> colsToSelectList = columnsToSelect.ToList<string>();
+            //colsToSelectList.Remove(keyValue);
+            //columnsToSelect = colsToSelectList.ToArray();
+
+            // rowSize es igual al espacio de key mas el espacio de las columnas a seleccionar
+            int rowSize = columnsToSelect.Length;
+            // stringRow, nuestro string que simulara la misma row, pero valores en string.
+            string[] stringRow = new string[rowSize];
+
+            // stringRowCounter muy importante, es nuestro contador referencia para colocar valores en el arreglo
+            int stringRowCounter = 0;
+
+            for (int i = 0; i < CountColums(); i++) // Este for recorrera todas las columnas que contiene el objeto Row
+            {
+                switch (columnTypeOrder[i]) //Necesitamos saber con que tipo de columna vamos tratando pasito a pasito, dandole suavecito suavecito
+                {
+                    case ColumnType.INT:
+                        if (columnsToSelect.Contains<string>(columnNames[i])) //Como esta es sobrecarga del metodo es para filtro, solo añadimos a stringRow si el valor coincide con valoresToSelect...
+                            stringRow[stringRowCounter++] = intColumnsDictionary[columnNames[i]].value.ToString();
+                        break;
+                    case ColumnType.VARCHAR:
+                        if (columnsToSelect.Contains<string>(columnNames[i])) // Misma situacion
+                            stringRow[stringRowCounter++] = varcharColumnsDictionary[columnNames[i]].value.ToString();
+                        break;
+                    case ColumnType.TIMEDATE:
+                        if (columnsToSelect.Contains<string>(columnNames[i])) // Misma situacion
+                            stringRow[stringRowCounter++] = timeDateColumnsDictionary[columnNames[i]].value.ToString("dd/MM/yyyy");
                         break;
                     default:
                         break;
@@ -192,19 +238,19 @@ namespace Proyecto01
 
 
         }
-        bool ValueExistsInRow(string column, Int value)
+        bool ValueExistsInRow(string column, Int obj)
         {
-            return intColumnsDictionary[column] == value;
+            return intColumnsDictionary[column].value == obj.value;
         }
-        bool ValueExistsInRow(string column, Varchar value)
+        bool ValueExistsInRow(string column, Varchar obj)
         {
 
-            return varcharColumnsDictionary[column] == value;
+            return varcharColumnsDictionary[column].value == obj.value;
         }
-        bool ValueExistsInRow(string column, TimeDate value)
+        bool ValueExistsInRow(string column, TimeDate obj)
         {
 
-            return timeDateColumnsDictionary[column] == value;
+            return timeDateColumnsDictionary[column].value == obj.value;
         }
 
 
@@ -256,31 +302,36 @@ namespace Proyecto01
 
         public string ParseToString(Row obj)
         {
+
             string rowInfo = "";
 
-
-            for (int i = 0; i < obj.CountColums(); i++)
+            if (obj.CountColums() != 0)
             {
-                switch (columnTypeOrder[i])
+                for (int i = 0; i < obj.CountColums(); i++)
                 {
-                    case ColumnType.INT:
-                        rowInfo += obj.columnNames[i] + ",INT," + obj.intColumnsDictionary[columnNames[i]].value.ToString() + "^";
-                        break;
-                    case ColumnType.VARCHAR:
-                        rowInfo += obj.columnNames[i] + ",VARCHAR(100)," + obj.varcharColumnsDictionary[columnNames[i]].value + "^";
+                    switch (obj.columnTypeOrder[i])
+                    {
+                        case ColumnType.INT:
+                            rowInfo += obj.columnNames[i] + ",INT," + obj.intColumnsDictionary[obj.columnNames[i]].value.ToString() + "^";
+                            break;
+                        case ColumnType.VARCHAR:
+                            rowInfo += obj.columnNames[i] + ",VARCHAR(100)," + obj.varcharColumnsDictionary[obj.columnNames[i]].value + "^";
 
-                        break;
-                    case ColumnType.TIMEDATE:
-                        rowInfo += obj.columnNames[i] + ",DATETIME," + obj.timeDateColumnsDictionary[columnNames[i]].value.ToString("dd/MM/yyyy") + "^";
-                        break;
-                    default:
-                        break;
+                            break;
+                        case ColumnType.TIMEDATE:
+                            rowInfo += obj.columnNames[i] + ",DATETIME," + obj.timeDateColumnsDictionary[obj.columnNames[i]].value.ToString("dd/MM/yyyy") + "^";
+                            break;
+                        default:
+                            break;
+                    }
                 }
+
+                rowInfo = rowInfo.Substring(0, rowInfo.Length - 1);
             }
 
-            rowInfo = rowInfo.Substring(0, rowInfo.Length - 1);
 
-            int spaceRequiredToStoreInfo = SpaceRequiredToStoreInfoInString();
+
+            int spaceRequiredToStoreInfo = SpaceRequiredToStoreInfoInString(obj);
 
             while (rowInfo.Length != spaceRequiredToStoreInfo)
             {
@@ -292,13 +343,19 @@ namespace Proyecto01
 
         public Row ParseToObjectType(string str)
         {
-            // NOMBRE,VARCHAR,JOSE^APELLIDO,VARCHAR,ALVAREZ^FACULTAD,VARCHAR,INGENIERIA^CUMPLEAÑOS,TIMEDATE,08/12/0997
+            //NOMBRE,VARCHAR,JOSE^APELLIDO,VARCHAR,ALVAREZ^FACULTAD,VARCHAR,INGENIERIA^CUMPLEAÑOS,TIMEDATE,08/12/0997
 
 
             str = str.Replace('~', ' ');
-            str = str.TrimStart();
+            str = str.Trim();
+
+
 
             Row rowInstance = new Row();
+
+            if (str == "")
+                return rowInstance;
+
 
             string[] columns = str.Split('^');
 
@@ -338,31 +395,35 @@ namespace Proyecto01
 
         public string ParseToString()
         {
+
             string rowInfo = "";
 
-
-            for (int i = 0; i < CountColums(); i++)
+            if (CountColums() != 0)
             {
-                switch (columnTypeOrder[i])
+                for (int i = 0; i < CountColums(); i++)
                 {
-                    case ColumnType.INT:
-                        rowInfo += columnNames[i] + ",INT," + intColumnsDictionary[columnNames[i]].value.ToString() + "^";
-                        break;
-                    case ColumnType.VARCHAR:
-                        rowInfo += columnNames[i] + ",VARCHAR(100)," + varcharColumnsDictionary[columnNames[i]].value + "^";
+                    switch (columnTypeOrder[i])
+                    {
+                        case ColumnType.INT:
+                            rowInfo += columnNames[i] + ",INT," + intColumnsDictionary[columnNames[i]].value.ToString() + "^";
+                            break;
+                        case ColumnType.VARCHAR:
+                            rowInfo += columnNames[i] + ",VARCHAR(100)," + varcharColumnsDictionary[columnNames[i]].value + "^";
 
-                        break;
-                    case ColumnType.TIMEDATE:
-                        rowInfo += columnNames[i] + ",DATETIME," + timeDateColumnsDictionary[columnNames[i]].value.ToString("dd/MM/yyyy") + "^";
-                        break;
-                    default:
-                        break;
+                            break;
+                        case ColumnType.TIMEDATE:
+                            rowInfo += columnNames[i] + ",DATETIME," + timeDateColumnsDictionary[columnNames[i]].value.ToString("dd/MM/yyyy") + "^";
+                            break;
+                        default:
+                            break;
+                    }
                 }
+
+
+
+                rowInfo = rowInfo.Substring(0, rowInfo.Length - 1);
             }
-
-
-
-            rowInfo = rowInfo.Substring(0, rowInfo.Length - 1);
+                
 
             int spaceRequiredToStoreInfo = SpaceRequiredToStoreInfoInString();
 
@@ -404,6 +465,40 @@ namespace Proyecto01
 
 
             spaceRequired = (20 * numberOfColumns) + (11 * intColumnsDictionary.Count + 100 * varcharColumnsDictionary.Count + 10 * timeDateColumnsDictionary.Count) + (3 * numberOfColumns);
+
+            return spaceRequired;
+
+
+        }
+
+        public int SpaceRequiredToStoreInfoInString(Row obj)
+        {
+            /*
+             *  20 -> NOMBRE DE COLUMNA
+
+                INT -> 11
+
+                TIMEDATE -> 10
+
+                VARCHAR -> 100 
+
+                tamaño minimo aproximado de espacio requerido para guardar la info...
+
+                20 * (#cols) + 11 * intDictionary.Count + 10 * timedateDictionary.count + 100 * varcharDictionary.count + (#cols)*3
+                                                                                                                              ^
+                                                                                                                            esta parte representa 2 comas y separadores ^
+             *
+             * 
+             * 
+             * 
+             * 
+             */
+
+            int spaceRequired = 0;
+            int numberOfColumns = obj.CountColums();
+
+
+            spaceRequired = (20 * numberOfColumns) + (11 * obj.intColumnsDictionary.Count + 100 * obj.varcharColumnsDictionary.Count + 10 * obj.timeDateColumnsDictionary.Count) + (3 * numberOfColumns);
 
             return spaceRequired;
 
