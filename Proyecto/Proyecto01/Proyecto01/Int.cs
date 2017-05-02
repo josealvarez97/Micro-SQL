@@ -47,5 +47,10 @@ namespace Proyecto01
         {
             throw new NotImplementedException();
         }
+
+        public string ParseToString()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

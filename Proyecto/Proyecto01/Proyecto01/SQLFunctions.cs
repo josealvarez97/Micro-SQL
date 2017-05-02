@@ -12,7 +12,7 @@ namespace Proyecto01
     {
 
 
-        public static void ExecuteCommand(SQLCommands comando, RichTextBox richTextBox)
+        public static void ExecuteCommand(SQLCommands comando, RichTextBox richTextBox, DataGridView outputGridView)
         {
             //ExecuteCommand(SQLTextParser.ReadAction(richTextBox))
             switch (comando)
@@ -21,7 +21,7 @@ namespace Proyecto01
                     CreateTable(SQLTextParser.GetCreateTableInstructions(richTextBox));
                     break;
                 case SQLCommands.select:
-                    Select(SQLTextParser.GetSelectInstructions(richTextBox));
+                    Select(SQLTextParser.GetSelectInstructions(richTextBox, outputGridView));
                     break;
                 case SQLCommands.delete:
                     Delete(SQLTextParser.GetDeleteInstructions(richTextBox));
@@ -112,9 +112,50 @@ namespace Proyecto01
             }
         }
 
-        public static void Select(string selectInstructions)
+        public static void Select(string selectInstructions, DataGridView outputGridView)
         {
 
+
+
+
+
+
+
+
+
+
+
+            BTree<Int, Row> ramBTree = new BTree<Int, Row>(5, new Row());
+
+            ramBTree.Search(new Int());
+
+            //outputGridView.
+
+
+            //foreach(Int in ramBTree.)
+
+
+
+
+
+
+
+
+            // Idea basica para el select....
+            Row row = new Row();
+
+            DataGridViewRow dataGridViewRow = new DataGridViewRow();
+            
+            outputGridView.Rows.Add(row.intColumnsDictionary);
+
+            foreach(Int key in ramBTree)
+            {
+                Row rowToAdd = ramBTree.Search(key).value;
+
+                outputGridView.Rows.Add(rowToAdd.RowValuesToString(key.ParseToString()));
+            }
+            
+            
         }
         public static void Delete(string deleteInstructions)
         {
