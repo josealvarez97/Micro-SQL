@@ -48,17 +48,19 @@ namespace Proyecto01
                                 i++;
                                 j = 0;
                                 break;
-                            //case "FROM":
-                            //    commmandsQueue.Enqueue(SQLCommands.fr);
-                            //    break;
+                            case "FROM":
+                                i++;
+                                j = 0;
+                                break;
                             case "DELETE":
                                 commmandsQueue.Enqueue(SQLCommands.delete);
                                 i++;
                                 j = 0;
                                 break;
-                            //case "WHERE":
-                            //    commmandsQueue.Enqueue(SQLCommands.select);
-                            //    break;
+                            case "WHERE":
+                                i++;
+                                j = 0;
+                                break;
                             case "CREATE TABLE":
                                 commmandsQueue.Enqueue(SQLCommands.createTable);
                                 i++;
@@ -74,12 +76,14 @@ namespace Proyecto01
                                 i++;
                                 j = 0;
                                 break;
-                                //case "VALUES":
-                                //    commmandsQueue.Enqueue(SQLCommands.);
-                                //    break;
-                                //case "GO":
-                                //    commmandsQueue.Enqueue(SQLCommands.select);
-                                //    break;
+                            case "VALUES":
+                                i++;
+                                j = 0;
+                                break;
+                            case "GO":
+                                i++;
+                                j = 0;
+                                break;
                         }
                     }
                     else
