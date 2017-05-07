@@ -60,7 +60,8 @@
             this.Controls.Add(this.uploadDictionaryDefault);
             this.Controls.Add(this.uploadDictionary);
             this.Name = "Form2";
-            this.Text = "Form2";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Cargar Diccionario";
             this.ResumeLayout(false);
 
         }

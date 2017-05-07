@@ -30,8 +30,10 @@
         {
             this.outputGridView = new System.Windows.Forms.DataGridView();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.runButton = new System.Windows.Forms.Button();
+            this.fileExplorer = new System.Windows.Forms.TreeView();
+            this.exportToCSV = new System.Windows.Forms.Button();
+            this.exportToExcel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.outputGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,13 +54,6 @@
             this.richTextBox1.Text = "";
             this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
-            // propertyGrid1
-            // 
-            this.propertyGrid1.Location = new System.Drawing.Point(13, 12);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(532, 446);
-            this.propertyGrid1.TabIndex = 2;
-            // 
             // runButton
             // 
             this.runButton.Location = new System.Drawing.Point(1097, 214);
@@ -69,17 +64,49 @@
             this.runButton.UseVisualStyleBackColor = true;
             this.runButton.Click += new System.EventHandler(this.runButton_Click);
             // 
+            // fileExplorer
+            // 
+            this.fileExplorer.Location = new System.Drawing.Point(13, 13);
+            this.fileExplorer.Name = "fileExplorer";
+            this.fileExplorer.Size = new System.Drawing.Size(532, 445);
+            this.fileExplorer.TabIndex = 4;
+            this.fileExplorer.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.fileExplorer_AfterSelect);
+            // 
+            // exportToCSV
+            // 
+            this.exportToCSV.Location = new System.Drawing.Point(992, 214);
+            this.exportToCSV.Name = "exportToCSV";
+            this.exportToCSV.Size = new System.Drawing.Size(99, 23);
+            this.exportToCSV.TabIndex = 5;
+            this.exportToCSV.Text = "Exportar a CSV";
+            this.exportToCSV.UseVisualStyleBackColor = true;
+            this.exportToCSV.Click += new System.EventHandler(this.exportToCSV_Click);
+            // 
+            // exportToExcel
+            // 
+            this.exportToExcel.Location = new System.Drawing.Point(877, 214);
+            this.exportToExcel.Name = "exportToExcel";
+            this.exportToExcel.Size = new System.Drawing.Size(109, 23);
+            this.exportToExcel.TabIndex = 6;
+            this.exportToExcel.Text = "Exportar Excel";
+            this.exportToExcel.UseVisualStyleBackColor = true;
+            this.exportToExcel.Click += new System.EventHandler(this.exportToExcel_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 470);
+            this.Controls.Add(this.exportToExcel);
+            this.Controls.Add(this.exportToCSV);
+            this.Controls.Add(this.fileExplorer);
             this.Controls.Add(this.runButton);
-            this.Controls.Add(this.propertyGrid1);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.outputGridView);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "microSQL";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.outputGridView)).EndInit();
             this.ResumeLayout(false);
 
@@ -89,8 +116,10 @@
 
         private System.Windows.Forms.DataGridView outputGridView;
         private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
         private System.Windows.Forms.Button runButton;
+        private System.Windows.Forms.TreeView fileExplorer;
+        private System.Windows.Forms.Button exportToCSV;
+        private System.Windows.Forms.Button exportToExcel;
     }
 }
 

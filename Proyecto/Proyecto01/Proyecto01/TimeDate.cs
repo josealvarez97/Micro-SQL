@@ -22,7 +22,7 @@ namespace Proyecto01
         {
             get
             {
-                return int.MinValue.ToString();
+                return DateTime.MinValue.ToString("dd/MM/yyyy");
             }
         }
 

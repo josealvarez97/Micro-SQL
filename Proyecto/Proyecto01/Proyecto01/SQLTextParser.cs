@@ -32,14 +32,14 @@ namespace Proyecto01
                 while (j < keyWords.Length)
                 {
                     // ME interesa solo tomar la palabra "DELETE" de "DELETE FROM" para el switch
-                    if (lines[i].Trim() == keyWords[2].originalReservedWord + " " + keyWords[1].originalReservedWord || lines[i].Trim() == keyWords[2].translation + " " + keyWords[1].translation)
+                    if (lines[i].Trim().ToUpper() == keyWords[2].originalReservedWord + " " + keyWords[1].originalReservedWord || lines[i].Trim().ToUpper() == keyWords[2].translation + " " + keyWords[1].translation)
                     {
                         var getDeleteWord = lines[i].Split();
 
                         lines[i] = getDeleteWord[0].Trim();
                     }
                     // Crear objeto "Palabra reservada" o algo por el estilo, para que tenga dos atributos.... traduccion y palabra reservada... ??????? una clase solo para tener dos atributos
-                    if (lines[i] == keyWords[j].originalReservedWord || lines[i] == keyWords[j].translation)
+                    if (lines[i].ToUpper() == keyWords[j].originalReservedWord || lines[i].ToUpper() == keyWords[j].translation)
                     {
                         switch (keyWords[j].originalReservedWord)
                         {
@@ -84,6 +84,11 @@ namespace Proyecto01
                                 i++;
                                 j = 0;
                                 break;
+                            case "UPDATE":
+                                commmandsQueue.Enqueue(SQLCommands.updateTable);
+                                i++;
+                                j = 0;
+                                break;
                         }
                     }
                     else
@@ -118,13 +123,13 @@ namespace Proyecto01
                 while (j < keyWords.Length && i < lines.Length)
                 {
                     // ME interesa solo tomar la palabra "DELETE" de "DELETE FROM" para el switch
-                    if (lines[i].Trim() == keyWords[2].originalReservedWord + " " + keyWords[1].originalReservedWord || lines[i].Trim() == keyWords[2].translation + " " + keyWords[1].translation)
+                    if (lines[i].Trim().ToUpper() == keyWords[2].originalReservedWord + " " + keyWords[1].originalReservedWord || lines[i].Trim().ToUpper() == keyWords[2].translation + " " + keyWords[1].translation)
                     {
                         var getDeleteWord = lines[i].Split();
 
                         lines[i] = getDeleteWord[0].Trim();
                     }
-                    if (lines[i].Trim() == keyWords[j].originalReservedWord || lines[i].Trim() == keyWords[j].translation)
+                    if (lines[i].Trim().ToUpper() == keyWords[j].originalReservedWord || lines[i].Trim().ToUpper() == keyWords[j].translation)
                     {
                         switch (keyWords[j].originalReservedWord)
                         {
@@ -501,7 +506,7 @@ namespace Proyecto01
             if (i < lines.Length)
             {
                 //En caso de que haya espacios o saltos de lineas los saltamos
-                if (lines[i] == "" || lines[i] == " ")
+                if (lines[i] == "" || lines[i] == " " && i + 1 != lines.Length /* Si es la parte final del archivo que ya no entre, ya se tomaron los datos */)
                 {
                     while (lines[i] == " " || lines[i] == "")
                     {
@@ -535,18 +540,20 @@ namespace Proyecto01
                 while (j < keyWords.Length && i < lines.Length)
                 {
                     // ME interesa solo tomar la palabra "DELETE" de "DELETE FROM" para el switch
-                    if (lines[i].Trim() == keyWords[2].originalReservedWord + " " + keyWords[1].originalReservedWord || lines[i].Trim() == keyWords[2].translation + " " + keyWords[1].translation)
+                    if (lines[i].Trim().ToUpper() == keyWords[2].originalReservedWord + " " + keyWords[1].originalReservedWord || lines[i].Trim().ToUpper() == keyWords[2].translation.ToUpper() + " " + keyWords[1].translation.ToUpper())
                     {
                         var getDeleteWord = lines[i].Split();
 
                         lines[i] = getDeleteWord[0].Trim();
                     }
-                    if (lines[i].Trim() == keyWords[j].originalReservedWord || lines[i].Trim() == keyWords[j].translation)
+                    if (lines[i].Trim().ToUpper() == keyWords[j].originalReservedWord || lines[i].Trim().ToUpper() == keyWords[j].translation.ToUpper())
                     {
                         switch (keyWords[j].originalReservedWord)
                         {
                             //columnName, columnName,columnName||tableName||columnaAFiltrar,valorABuscar
                             case "SELECT":
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
                                 // Aumentar i para empezar a tomar despues del "SELECT"
                                 i++;
 
@@ -555,13 +562,15 @@ namespace Proyecto01
                                 // Si NO es asterisco pues tomo todos los nombres de las columnas
                                 if (lines[i].Trim() != "*")
                                 {
-
-                                    while (lines[i] != keyWords[1].originalReservedWord /*FROM*/ || lines[i] != keyWords[1].translation)
+                                    // El comparador debe ser && porque solo debe entrar al while si la palabra actual no coincide con  "FROM"  o con  la traduccion
+                                    // Porque si no coinciden ningun0 de la dos, quiere decir que no es esa palabra ("FROM")
+                                    // Por el contrario, si uno de ellos coincide quiere decir que si es esa palabra ("FROM")
+                                    while (lines[i].ToUpper() != keyWords[1].originalReservedWord /*FROM*/ && /*Quite el || */lines[i].ToUpper() != keyWords[1].translation.ToUpper())
                                     {
                                         lines[i] = lines[i].Trim();
                                         lines[i] = lines[i].TrimEnd(',');
 
-                                        if (lines[i + 1] != keyWords[1].originalReservedWord /*FROM*/ || lines[i + 1] != keyWords[1].translation)
+                                        if (lines[i + 1].ToUpper() != keyWords[1].originalReservedWord /*FROM*/ && /*Quite el || */ lines[i + 1].ToUpper() != keyWords[1].translation.ToUpper())
                                             selectInstructions += lines[i] + ",";
                                         else
                                             selectInstructions += lines[i] + "||";
@@ -591,7 +600,7 @@ namespace Proyecto01
                                     if (i < lines.Length)
                                     {
                                         // Si hay para filtrar pues lo leo
-                                        if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/|| lines[i].Trim().ToUpper() == keyWords[3].translation)
+                                        if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/&& lines[i].Trim().ToUpper() == keyWords[3].translation.ToUpper())
                                         {
                                             //Aumentar i para empezar a tomar despues de "WHERE"
                                             i++;
@@ -642,7 +651,7 @@ namespace Proyecto01
                                     if (i < lines.Length)
                                     {
                                         // Si hay para filtrar pues lo leo
-                                        if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/|| lines[i].Trim().ToUpper() == keyWords[3].translation)
+                                        if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/&& lines[i].Trim().ToUpper() == keyWords[3].translation.ToUpper())
                                         {
                                             //Aumentar i para empezar a tomar despues de "WHERE"
                                             i++;
@@ -668,6 +677,8 @@ namespace Proyecto01
 
                             //tableName||columnaAFiltrar,valorABuscar
                             case "DELETE":
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
                                 //Aumentar i para tomar despues de "DELETE FROM"
                                 i++;
 
@@ -684,7 +695,7 @@ namespace Proyecto01
                                 // Si hay para filtrar pues lo leo
                                 if (i < lines.Length)
                                 {
-                                    if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/|| lines[i].Trim().ToUpper() == keyWords[3].translation)
+                                    if (lines[i].Trim().ToUpper() == keyWords[3].originalReservedWord /*WHERE*/&& lines[i].Trim().ToUpper() == keyWords[3].translation.ToUpper())
                                     {
                                         //Aumentar i para empezar a tomar despues de "WHERE"
                                         i++;
@@ -710,6 +721,9 @@ namespace Proyecto01
 
                             //tableName || columnName,type,specialAttribute|columnName,type,specialAttribute
                             case "CREATE TABLE":
+
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
                                 //Aumentar i para empezar a analizar despues de CREATE TABLE
                                 i++;
 
@@ -754,6 +768,8 @@ namespace Proyecto01
 
                             //tableName
                             case "DROP TABLE":
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
                                 //Aumentar i para empezar a analizar despues de DROP TABLE
                                 i++;
 
@@ -768,6 +784,8 @@ namespace Proyecto01
 
                             //tableName||columnName,columnName,columnName||value,value,value
                             case "INSERT INTO":
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
                                 // Aumentar i para empezar a leer despues del "INSERT INTO"
                                 i++;
 
@@ -836,6 +854,8 @@ namespace Proyecto01
 
                             //tableName||columnName,newValue||valorLlavePrimaria
                             case "UPDATE":
+                                i = CheckIfThereIsAWhiteSpaceOrALineBreak(lines, i);
+
                                 // Aumentar i para empezar a leer despues del UPDATE
                                 i++;
 
@@ -881,6 +901,14 @@ namespace Proyecto01
 
                                 instructionsQueue.Enqueue(updateInstructions);
                                 updateInstructions = "";
+                                break;
+
+                            case "GO":
+                                // Sumar i para pasar el GO
+                                i++;
+
+                                //Sumar j para analizar otra vez todo el arreglo de KeyWords
+                                j = 0;
                                 break;
                         }
                     }

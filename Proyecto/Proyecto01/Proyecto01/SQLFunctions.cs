@@ -73,304 +73,491 @@ namespace Proyecto01
         }
         public static void CreateTable(string createTableInstructions)
         {
-            /*string createTableInstructions = "tableName||columnName,type,specialAttribute|columnName,type,specialAttribute";*/
-
-            // Separar tableName de Columnas con arreglo generalFields
-
-            string[] createTableFields = createTableInstructions.Split(new string[] { "||" },StringSplitOptions.RemoveEmptyEntries);// http://stackoverflow.com/questions/8928601/how-can-i-split-a-string-with-a-string-delimiter
-
-            string tableName = createTableFields[0];
-            //Separar columnas con arreglo columns
-            string[] columns = createTableFields[1].Split('|');
-            string rowInfo = createTableFields[1];
-
-            Row rowModel = new Row(rowInfo);
-
-
-            string btreeFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".arbolb";
-            string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
-            //Row rowModel = new Row();
-
-
-
-
-            //Leer columnas de arreglo columns. PARA CREAR ROW MODEL
-            //for (int i = 0; i < columns.Length; i++)
-            //{
-            //    //Separar atributo de columnas con arreglo columnAttributes
-            //    string[] columnAttributes = columns[i].Split(',');
-
-            //    //Agregar columna correspondiente a nuestra tabla
-            //    switch (columnAttributes[1]/*type*/) // columnName en la 0, type en la 1, special attribute en la 2
-            //    {
-            //        case "INT":
-            //            rowModel.intColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new Int());
-            //            break;
-            //        case "VARCHAR-100":
-            //            rowModel.varcharColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new Varchar());
-            //            break;
-            //        case "DATETIME":
-            //            rowModel.timeDateColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new TimeDate());
-            //            break;
-            //        default:
-            //            break;
-            //    }
-
-            //}
-
-            //((IStringParseable<Row>)rowModel).ParseToObjectType(""); Cuando se implementa explicitamente la interfaz en una clase
-
-
-
-
-            int order = 7; //no sabemos que ponerle...
-            //Leer columnas de arreglo columns. PARA CREAR BTREE (o sea ahora solo buscamos la que tenga special attribute key...) 
-            for (int i = 0; i < columns.Length; i++)
+            try
             {
-                //Separar atributo de columnas con arreglo columnAttributes 
-                string[] columnAttributes = columns[i].Split(',');
+                /*string createTableInstructions = "tableName||columnName,type,specialAttribute|columnName,type,specialAttribute";*/
 
-                // Crear arbol b cuando encontremos la columna que tiene el specialAttribute == KEY
-                if (columnAttributes[2] == "KEY")
-                    // Crear arbol de acuerdo al tipo de KEY requerido
-                    switch (columnAttributes[1])
-                    {
-                        case "INT":
-                            BTree<Int, Row> intTableBTree = new BTree<Int, Row>(order, btreeFilePath, rowModel);
-                            intTableBTree.Create();
-                            break;
-                        case "VARCHAR-100":
-                            BTree<Varchar, Row> varcharTableBTree = new BTree<Varchar, Row>(order, btreeFilePath, rowModel);
-                            varcharTableBTree.Create();
-                            break;
-                        case "DATETIME":
-                            BTree<TimeDate, Row> timeDateTableBTree = new BTree<TimeDate, Row>(order, btreeFilePath, rowModel);
-                            timeDateTableBTree.Create();
-                            break;
-                        default:
-                            break;
-                    }
+                // Separar tableName de Columnas con arreglo generalFields
+
+                string[] createTableFields = createTableInstructions.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);// http://stackoverflow.com/questions/8928601/how-can-i-split-a-string-with-a-string-delimiter
+
+                string tableName = createTableFields[0];
+                //Separar columnas con arreglo columns
+                string[] columns = createTableFields[1].Split('|');
+                string rowInfo = createTableFields[1];
+
+                Row rowModel = new Row(rowInfo);
+
+
+                string btreeFilePath = Program.APPLICATION_TREES_PATH + tableName + ".arbolb";
+                string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
+                //Row rowModel = new Row();
+
+
+
+
+                //Leer columnas de arreglo columns. PARA CREAR ROW MODEL
+                //for (int i = 0; i < columns.Length; i++)
+                //{
+                //    //Separar atributo de columnas con arreglo columnAttributes
+                //    string[] columnAttributes = columns[i].Split(',');
+
+                //    //Agregar columna correspondiente a nuestra tabla
+                //    switch (columnAttributes[1]/*type*/) // columnName en la 0, type en la 1, special attribute en la 2
+                //    {
+                //        case "INT":
+                //            rowModel.intColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new Int());
+                //            break;
+                //        case "VARCHAR-100":
+                //            rowModel.varcharColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new Varchar());
+                //            break;
+                //        case "DATETIME":
+                //            rowModel.timeDateColumnsDictionary.Add(columnAttributes[0]/*columnName*/, new TimeDate());
+                //            break;
+                //        default:
+                //            break;
+                //    }
+
+                //}
+
+                //((IStringParseable<Row>)rowModel).ParseToObjectType(""); Cuando se implementa explicitamente la interfaz en una clase
+
+
+
+
+                int order = 7; //no sabemos que ponerle...
+                               //Leer columnas de arreglo columns. PARA CREAR BTREE (o sea ahora solo buscamos la que tenga special attribute key...) 
+                for (int i = 0; i < columns.Length; i++)
+                {
+                    //Separar atributo de columnas con arreglo columnAttributes 
+                    string[] columnAttributes = columns[i].Split(',');
+
+                    // Crear arbol b cuando encontremos la columna que tiene el specialAttribute == KEY
+                    if (columnAttributes[2] == "KEY")
+                        // Crear arbol de acuerdo al tipo de KEY requerido
+                        switch (columnAttributes[1])
+                        {
+                            case "INT":
+                                BTree<Int, Row> intTableBTree = new BTree<Int, Row>(order, btreeFilePath, rowModel);
+                                intTableBTree.Create();
+                                break;
+                            case "VARCHAR(100)":
+                                BTree<Varchar, Row> varcharTableBTree = new BTree<Varchar, Row>(order, btreeFilePath, rowModel);
+                                varcharTableBTree.Create();
+                                break;
+                            case "DATETIME":
+                                BTree<TimeDate, Row> timeDateTableBTree = new BTree<TimeDate, Row>(order, btreeFilePath, rowModel);
+                                timeDateTableBTree.Create();
+                                break;
+                            default:
+                                break;
+                        }
+                }
+
+                tableFilesHandler.CreateTableFile(tableFilePath, rowInfo);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Algo ha salido mal CREANDO LA TABLA. Revise dicha instruccion", e);
             }
 
-            tableFilesHandler.CreateTableFile(tableFilePath, rowInfo);
+
         }
 
         public static void Select(string selectInstructions, DataGridView outputGridView)
         {
-            outputGridView.Columns.Clear();
-            // Select instructions model
-            //columnName, columnName,columnName||tableName||columnaAFiltrar,valorABuscar
-
-            // Cocinamos la data... para digerirla mejor...
-            string[] selectInstructionsFields = selectInstructions.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
-            string[] columnNamesToSelect = selectInstructionsFields[0].Split(',');
-            string tableName = selectInstructionsFields[1];
-            string[] filterFields;
-            string columnToFilter = "";
-            string valueToSeek = "";
-            bool seekSpecificValue;
-
-            if(selectInstructionsFields.Length > 2)
+            try
             {
-                filterFields = selectInstructionsFields[2].Split(',');
-                columnToFilter = filterFields[0];
-                valueToSeek = filterFields[1];
-                seekSpecificValue = true;
+                outputGridView.Columns.Clear();
+                // Select instructions model
+                //columnName, columnName,columnName||tableName||columnaAFiltrar,valorABuscar
+
+                // Cocinamos la data... para digerirla mejor...
+                string[] selectInstructionsFields = selectInstructions.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+                string[] columnNamesToSelect = selectInstructionsFields[0].Split(',');
+                string tableName = selectInstructionsFields[1];
+                string[] filterFields;
+                string columnToFilter = "";
+                string valueToSeek = "";
+                bool seekSpecificValue;
+
+                if (selectInstructionsFields.Length > 2)
+                {
+                    filterFields = selectInstructionsFields[2].Split(',');
+                    columnToFilter = filterFields[0];
+                    valueToSeek = filterFields[1];
+                    seekSpecificValue = true;
+                }
+                else
+                {
+                    seekSpecificValue = false;
+                }
+
+
+
+                string btreeFilePath = Program.APPLICATION_TREES_PATH + tableName + ".arbolb";
+                string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
+                string typeOfKey = tableFilesHandler.ReadTypeOfKey(tableFilePath);
+                Row rowModel = tableFilesHandler.GetRowModelFromFile(tableFilePath);
+                Row rowToAdd;
+                int order = 7;
+
+                // AÑADIR COLS AL GRID
+                for (int i = 0; i < rowModel.columnNames.Count; i++)
+                {
+                    if (columnNamesToSelect.Contains<string>(rowModel.columnNames[i]) || columnNamesToSelect[0] == "*")
+                        outputGridView.Columns.Add(rowModel.columnNames[i], rowModel.columnNames[i]);
+                }
+
+
+
+                // Como siempre dependemos del type of key para el codigo sobre jalar el arbol a RAM
+                switch (typeOfKey)
+                {
+                    case "INT":
+                        // Jalamos arbol a RAM
+                        BTree<Int, Row> ramBTreeInt = BTree<Int, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                        // Recorremos arbol, o sea, recorremos cada fila de la tabla
+                        foreach (Int key in ramBTreeInt)
+                        {
+                            // Recibimos row correspondiente a una key determinada
+                            rowToAdd = ramBTreeInt.Search(key).value;
+
+                            // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview, O QUE NO HAYAN RESTRICCIONES ( seekSpecificValue == false)
+                            if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek) || seekSpecificValue == false)
+                                if (columnNamesToSelect[0] != "*")
+                                {
+
+                                    outputGridView.Rows.Add(rowToAdd.RowValuesToString(columnNamesToSelect));
+                                }
+                                else
+                                {
+                                    outputGridView.Rows.Add(rowToAdd.RowValuesToString());
+                                }
+
+
+                        }
+                        break;
+                    case "VARCHAR(100)":
+                        // Jalamos arbol a RAM
+                        BTree<Varchar, Row> ramBTreeVarchar = BTree<Varchar, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                        // Recorremos arbol, o sea, recorremos cada fila de la tabla
+                        foreach (Varchar key in ramBTreeVarchar)
+                        {
+                            //Recibimos row correspondiente a una key determinada
+                            rowToAdd = ramBTreeVarchar.Search(key).value;
+
+                            // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
+                            if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek) || seekSpecificValue == false)
+                                if (columnNamesToSelect[0] != "*")
+                                {
+                                    outputGridView.Rows.Add(rowToAdd.RowValuesToString(columnNamesToSelect));
+                                }
+                                else
+                                {
+                                    outputGridView.Rows.Add(rowToAdd.RowValuesToString());
+                                }
+                        }
+                        break;
+                    case "DATETIME":
+                        // Jalamos arbol a RAM
+                        BTree<TimeDate, Row> ramBTreeTimeDate = BTree<TimeDate, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                        // Recorremos arbol, o sea, recorremos cada fila de la tabla
+                        foreach (TimeDate key in ramBTreeTimeDate)
+                        {
+                            // Recibimos row correspondiente a una key determinada
+                            rowToAdd = ramBTreeTimeDate.Search(key).value;
+
+                            // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
+                            if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek) || seekSpecificValue == false)
+                                if (columnNamesToSelect[0] != "*")
+                                {
+                                    outputGridView.Rows.Add(rowToAdd.RowValuesToString(columnNamesToSelect));
+                                }
+                                else
+                                {
+                                    outputGridView.Rows.Add(rowToAdd.RowValuesToString());
+                                }
+                        }
+                        break;
+                }
+
             }
-            else
+            catch (Exception e)
             {
-                seekSpecificValue = false;
+                throw new Exception("Error SELECCIONANDO DATOS DE TABLA, revise dichas instrucciones", e);//se manda la inner exception para que sea identificada y atrapada por el catch global mas adecuado...
             }
 
-          
-
-            string btreeFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".arbolb";
-            string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
-            string typeOfKey = tableFilesHandler.ReadTypeOfKey(tableFilePath);
-            Row rowModel = tableFilesHandler.GetRowModelFromFile(tableFilePath);
-            Row rowToAdd;
-            int order = 7;
-
-            // AÑADIR COLS AL GRID
-            for (int i = 0; i < rowModel.columnNames.Count; i++)
-            {
-                if (columnNamesToSelect.Contains<string>(rowModel.columnNames[i]) || columnNamesToSelect[0] == "*" )
-                    outputGridView.Columns.Add(rowModel.columnNames[i], rowModel.columnNames[i]);
-            }
-
-
-
-            // Como siempre dependemos del type of key para el codigo sobre jalar el arbol a RAM
-            switch (typeOfKey)
-            {
-                case "INT":
-                    // Jalamos arbol a RAM
-                    BTree<Int, Row> ramBTreeInt = BTree<Int, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
-                    // Recorremos arbol, o sea, recorremos cada fila de la tabla
-                    foreach (Int key in ramBTreeInt)
-                    {
-                        // Recibimos row correspondiente a una key determinada
-                        rowToAdd = ramBTreeInt.Search(key).value;
-
-                        // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview, O QUE NO HAYAN RESTRICCIONES ( seekSpecificValue == false)
-                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek) || seekSpecificValue == false)
-                            if (columnNamesToSelect[0] != "*")
-                            {
-
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(columnNamesToSelect));
-                            }
-                            else
-                            {
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString());
-                            }
-
-
-                    }
-                    break;
-                case "VARCHAR(100)":
-                    // Jalamos arbol a RAM
-                    BTree<Varchar, Row> ramBTreeVarchar = BTree<Varchar, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
-                    // Recorremos arbol, o sea, recorremos cada fila de la tabla
-                    foreach (Varchar key in ramBTreeVarchar)
-                    {
-                        // Recibimos row correspondiente a una key determinada
-                        rowToAdd = ramBTreeVarchar.Search(key).value;
-
-                        // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
-                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek) || seekSpecificValue == false)
-                            if (columnNamesToSelect[0] != "*")
-                            {
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(columnNamesToSelect));
-                            }
-                            else
-                            {
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString());
-                            }
-                    }
-                    break;
-                case "DATETIME":
-                    // Jalamos arbol a RAM
-                    BTree<TimeDate, Row> ramBTreeTimeDate = BTree<TimeDate, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
-                    // Recorremos arbol, o sea, recorremos cada fila de la tabla
-                    foreach (TimeDate key in ramBTreeTimeDate)
-                    {
-                        // Recibimos row correspondiente a una key determinada
-                        rowToAdd = ramBTreeTimeDate.Search(key).value;
-
-                        // Verificamos que dicha row contenga el valor valueToSeek para mostrarla / añadir al gridview
-                        if (rowToAdd.ValueExistsInRow(columnToFilter, valueToSeek) || seekSpecificValue == false)
-                            if (columnNamesToSelect[0] != "*")
-                            {
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString(columnNamesToSelect));
-                            }
-                            else
-                            {
-                                outputGridView.Rows.Add(rowToAdd.RowValuesToString());
-                            }
-                    }
-                    break;
-            }
 
 
         }
         public static void Delete(string deleteInstructions)
         {
+            try
+            {
+                //tableName||columnaAFiltrar,valorABuscar
+                string[] deleteInstructionsFields = deleteInstructions.Split(new string[] { "||" }, StringSplitOptions.None);
+                string tableName = deleteInstructionsFields[0];
+                string[] valueToDeleteColumnSpecifications = deleteInstructionsFields[1].Split(',');
+                string columnToSearchTheValueThatWillBeDeleted = valueToDeleteColumnSpecifications[0]; // No implementado. Borra solo en base a keys
+                string valueToDelete = valueToDeleteColumnSpecifications[1];
+
+                string treeDiskPath = Program.APPLICATION_TREES_PATH + tableName + ".arbolb";
+                string tableDiskPath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
+
+                Row rowModel = tableFilesHandler.GetRowModelFromFile(tableDiskPath);
+
+                string typeOfKey = tableFilesHandler.ReadTypeOfKey(tableDiskPath);
+                int order = 7;
+
+                //-------------------------------------------------------------------------------------------
+
+                switch (typeOfKey)
+                {
+                    case "INT":
+                        // Jalamos arbol a RAM
+                        BTree<Int, Row> ramBTreeInt = BTree<Int, Row>.ReadBTreeFromFile(treeDiskPath, order, rowModel);
+                        // Recorremos arbol, o sea, recorremos cada fila de la tabla
+                        foreach (Int key in ramBTreeInt)
+                        {
+
+
+                            BTree<Int, Row> intRamBTree = BTree<Int, Row>.ReadBTreeFromFile(treeDiskPath, 7, rowModel);
+
+                            intRamBTree.Remove(new Int().ParseToObjectType(valueToDelete));
+
+
+                        }
+                        break;
+                    case "VARCHAR(100)":
+                        BTree<Varchar, Row> varcharRamBtree = BTree<Varchar, Row>.ReadBTreeFromFile(treeDiskPath, 7, rowModel);
+
+                        varcharRamBtree.Remove(new Varchar().ParseToObjectType(valueToDelete));
+                        break;
+                    case "DATETIME":
+                        BTree<TimeDate, Row> dateTimeRamBtree = BTree<TimeDate, Row>.ReadBTreeFromFile(treeDiskPath, 7, rowModel);
+
+                        dateTimeRamBtree.Remove(new TimeDate().ParseToObjectType(valueToDelete));
+                        break;
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                //--------------------------------------------------------------------------------------------------
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Algo ha salido mal en Eliminar Datos, revise dicha instrucción.", e);
+            }
 
         }
         public static void DropTable(string dropInstructions)
         {
+            try
+            {
+                //tableName
+                string tableName = dropInstructions;
+
+                string treeDiskPath = Program.APPLICATION_TREES_PATH + tableName + ".arbolb";
+                string tableDiskPath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
+                tableFilesHandler.DeleteTableFile(tableDiskPath);
+                tableFilesHandler.DeleteTreeFile(treeDiskPath);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Algo ha salido mal Eliminando La Tabla, revise dicha instrucción.", e);
+            }
 
         }
         public static void Insert(string insertInstructions)
         {
-            //string insertInstructions = "tableName||columnName1,columnName2,columnName3||value1,value2,value3;
-
-            string[] insertFields = insertInstructions.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
-            string tableName = insertFields[0];
-
-            string[] columns = insertFields[1].Split(',');
-            string[] values = insertFields[2].Split(',');
-
-            string btreeFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".arbolb";
-            string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
-
-
-            string keyType = tableFilesHandler.ReadTypeOfKey(tableFilePath);
-
-            Row rowModel = tableFilesHandler.GetRowModelFromFile(tableFilePath);
-            int order = 7;//no sabemos que ponerle...
-
-
-
-            Row rowToAdd = new Row();
-            for (int i = 0; i < columns.Length; i++)
+            try
             {
-                rowToAdd.columnNames.Add(columns[i]);
-                // Insert corresponding value into Row
-                switch (rowModel.columnTypeOrder[i])
+                //string insertInstructions = "tableName||columnName1,columnName2,columnName3||value1,value2,value3;
+                string[] insertFields = insertInstructions.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+                string tableName = insertFields[0];
+
+                string[] columns = insertFields[1].Split(',');
+                string[] values = insertFields[2].Split(',');
+
+                string btreeFilePath = Program.APPLICATION_TREES_PATH + tableName + ".arbolb";
+                string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
+
+
+                string keyType = tableFilesHandler.ReadTypeOfKey(tableFilePath);
+
+                Row rowModel = tableFilesHandler.GetRowModelFromFile(tableFilePath);
+                int order = 7;//no sabemos que ponerle...
+
+
+
+                Row rowToAdd = new Row();
+                for (int i = 0; i < columns.Length; i++)
                 {
-                    case ColumnType.INT:
-                        rowToAdd.intColumnsDictionary.Add(columns[i], new Int().ParseToObjectType(values[i]));
-                        rowToAdd.columnTypeOrder.Add(ColumnType.INT);
+                    rowToAdd.columnNames.Add(columns[i]);
+                    // Insert corresponding value into Row
+                    switch (rowModel.columnTypeOrder[i])
+                    {
+                        case ColumnType.INT:
+                            rowToAdd.intColumnsDictionary.Add(columns[i], new Int().ParseToObjectType(values[i]));
+                            rowToAdd.columnTypeOrder.Add(ColumnType.INT);
+                            break;
+                        case ColumnType.VARCHAR:
+                            rowToAdd.varcharColumnsDictionary.Add(columns[i], new Varchar().ParseToObjectType(values[i]));
+                            rowToAdd.columnTypeOrder.Add(ColumnType.VARCHAR);
+                            break;
+                        case ColumnType.TIMEDATE:
+                            rowToAdd.timeDateColumnsDictionary.Add(columns[i], new TimeDate().ParseToObjectType(values[i]));
+                            rowToAdd.columnTypeOrder.Add(ColumnType.TIMEDATE);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+
+
+                switch (keyType) // WE FIRST NEED TO KNOW WHAT KEY TYPE DOES THE TABLE (BTREE) HAS...
+                {
+                    case "INT":
+                        BTree<Int, Row> intRamBTree = BTree<Int, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                        //// Get key where we want to insert rest of values. El constructor de Entry lo hará
+                        //Int key = new Int().ParseToObjectType(values[0]);
+                        // AÑADIR ENTRY
+                        Entry<Int, Row> entryInts = new Entry<Int, Row>(values[0], new Row().ParseToString(rowToAdd));
+                        intRamBTree.Insert(entryInts);
                         break;
-                    case ColumnType.VARCHAR:
-                        rowToAdd.varcharColumnsDictionary.Add(columns[i], new Varchar().ParseToObjectType(values[i]));
-                        rowToAdd.columnTypeOrder.Add(ColumnType.VARCHAR);
+
+                    case "VARCHAR(100)":
+                        BTree<Varchar, Row> varcharRamBTree = BTree<Varchar, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                        // AÑADIR ENTRY
+                        Entry<Varchar, Row> entryVarchars = new Entry<Varchar, Row>(values[0], new Row().ParseToString(rowToAdd));
+                        varcharRamBTree.Insert(entryVarchars);
                         break;
-                    case ColumnType.TIMEDATE:
-                        rowToAdd.timeDateColumnsDictionary.Add(columns[i], new TimeDate().ParseToObjectType(values[i]));
-                        rowToAdd.columnTypeOrder.Add(ColumnType.TIMEDATE);
-                        break;
-                    default:
+
+                    case "DATETIME":
+                        BTree<TimeDate, Row> timeDateRamBTree = BTree<TimeDate, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                        // AÑADIR ENTRY
+                        Entry<TimeDate, Row> entryTimeDates = new Entry<TimeDate, Row>(values[0], new Row().ParseToString(rowToAdd));
+                        timeDateRamBTree.Insert(entryTimeDates);
                         break;
                 }
             }
-
-
-
-            switch (keyType) // WE FIRST NEED TO KNOW WHAT KEY TYPE DOES THE TABLE (BTREE) HAS...
+            catch (Exception e)
             {
-                case "INT":
-                    BTree<Int, Row> intRamBTree = BTree<Int, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
-                    //// Get key where we want to insert rest of values. El constructor de Entry lo hará
-                    //Int key = new Int().ParseToObjectType(values[0]);
-                    // AÑADIR ENTRY
-                    Entry<Int, Row> entryInts = new Entry<Int, Row>(values[0], new Row().ParseToString(rowToAdd));
-                    intRamBTree.Insert(entryInts);
-                    break;
-
-                case "VARCHAR-100":
-                    BTree<Varchar, Row> varcharRamBTree = BTree<Varchar, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
-                    // AÑADIR ENTRY
-                    Entry<Varchar, Row> entryVarchars = new Entry<Varchar, Row>(values[0], new Row().ParseToString(rowToAdd));
-                    varcharRamBTree.Insert(entryVarchars);
-                    break;
-
-                case "TIMEDATE":
-                    BTree<TimeDate, Row> timeDateRamBTree = BTree<TimeDate, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
-                    // AÑADIR ENTRY
-                    Entry<TimeDate, Row> entryTimeDates = new Entry<TimeDate, Row>(values[0], new Row().ParseToString(rowToAdd));
-                    timeDateRamBTree.Insert(entryTimeDates);
-                    break;
+                throw new Exception("Algo ha salido mal Insertando El Dato", e);
             }
+
 
         }
         public static void UpdateTable(string updateInstructions)
         {
+            try
+            {
+                //tableName||columnName,newValue||valorLlavePrimaria
+
+                string[] updateFields = updateInstructions.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+                string tableName = updateFields[0].ToString();
+                string[] valueAndColumnToUpdate = updateFields[1].Split(',');
+                string columnToUpdate = valueAndColumnToUpdate[0];
+                string newValue = valueAndColumnToUpdate[1];
+                string keyValueToSearch = updateFields[2].ToString();
+
+
+                string btreeFilePath = Program.APPLICATION_TREES_PATH + tableName + ".arbolb";
+                string tableFilePath = Program.APPLICATION_TABLES_PATH + tableName + ".tabla";
+                string typeOfKey = tableFilesHandler.ReadTypeOfKey(tableFilePath);
+                Row rowModel = tableFilesHandler.GetRowModelFromFile(tableFilePath);
+                Row rowModify;
+                int order = 7;
+
+                
+
+                switch (typeOfKey)
+                {
+                    case "INT":
+                        // Obtenemos arbol de Ram
+                        BTree<Int, Row> ramBTreeInt = BTree<Int, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+
+                        Int key = new Int();
+                        key.value = int.Parse(keyValueToSearch);
+
+                        // Obtenemos la fila donde se encuentra el valor a modificar
+                        rowModify = ramBTreeInt.Search(key).value;
+
+                        // Modificamos con el nuevo valor
+                        if (rowModify.intColumnsDictionary.ContainsKey(columnToUpdate))
+                            rowModify.intColumnsDictionary[columnToUpdate] = new Int().ParseToObjectType(newValue); // Coloco el nuevo valor en la columna
+                        if (rowModify.varcharColumnsDictionary.ContainsKey(columnToUpdate))
+                            rowModify.varcharColumnsDictionary[columnToUpdate] = new Varchar().ParseToObjectType(newValue);
+                        if (rowModify.timeDateColumnsDictionary.ContainsKey(columnToUpdate))
+                            rowModify.timeDateColumnsDictionary[columnToUpdate] = new TimeDate().ParseToObjectType(newValue);
+
+                        // Agregamos al arbol la fila con el nuevo valor
+                        ramBTreeInt.SearchAndModify(key, rowModify);
+
+                        break;
+                    case "VARCHAR(100)":
+                        BTree<Varchar, Row> ramBTreeVarchar = BTree<Varchar, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                        Varchar varcharKey = new Varchar();
+                        varcharKey.value = (keyValueToSearch);
+
+
+                        // value porque queremos los values, no la llave, pero en la fila esta la key :v
+                        rowModify = ramBTreeVarchar.Search(varcharKey).value;
+                        /// Modificamos con el nuevo valor
+                        if (rowModify.intColumnsDictionary.ContainsKey(columnToUpdate))
+                            rowModify.intColumnsDictionary[columnToUpdate] = new Int().ParseToObjectType(newValue); // Coloco el nuevo valor en la columna
+                        if (rowModify.varcharColumnsDictionary.ContainsKey(columnToUpdate))
+                            rowModify.varcharColumnsDictionary[columnToUpdate] = new Varchar().ParseToObjectType(newValue);
+                        if (rowModify.timeDateColumnsDictionary.ContainsKey(columnToUpdate))
+                            rowModify.timeDateColumnsDictionary[columnToUpdate] = new TimeDate().ParseToObjectType(newValue);
+
+                        //Hacer metodo SearchAndModified(key, new value)
+                        ramBTreeVarchar.SearchAndModify(varcharKey, rowModify);
+
+                        break;
+                    case "DATETIME":
+                        BTree<TimeDate, Row> ramBTreeTimeDate = BTree<TimeDate, Row>.ReadBTreeFromFile(btreeFilePath, order, rowModel);
+                        TimeDate datetimeKey = new TimeDate();
+                        datetimeKey.value = DateTime.Parse(keyValueToSearch);
+
+                        // value porque queremos los values, no la llave, pero en la fila esta la key :v
+                        rowModify = ramBTreeTimeDate.Search(datetimeKey).value;
+                        // Modificamos con el nuevo valor
+                        if (rowModify.intColumnsDictionary.ContainsKey(columnToUpdate))
+                            rowModify.intColumnsDictionary[columnToUpdate] = new Int().ParseToObjectType(newValue); // Coloco el nuevo valor en la columna
+                        if (rowModify.varcharColumnsDictionary.ContainsKey(columnToUpdate))
+                            rowModify.varcharColumnsDictionary[columnToUpdate] = new Varchar().ParseToObjectType(newValue);
+                        if (rowModify.timeDateColumnsDictionary.ContainsKey(columnToUpdate))
+                            rowModify.timeDateColumnsDictionary[columnToUpdate] = new TimeDate().ParseToObjectType(newValue);
+                        //Hacer metodo SearchAndModified(key, new value)
+                        ramBTreeTimeDate.SearchAndModify(datetimeKey, rowModify);
+                        break;
+
+
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Algo ha salido mal en la Actualizacion de Datos", e);
+            }
 
         }
-
-
-
-
-
-
-
     }
-
-
-
 }
+
 
 
 

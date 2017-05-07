@@ -83,6 +83,31 @@ namespace Proyecto01
             }
         }
 
+        static public void DeleteTableFile(string path)
+        {
+            try
+            {
+                File.Delete(path);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error eliminando tabla: " + path + ", ¿Existe el archivo?", e);
+            }
+
+
+        }
+        static public void DeleteTreeFile(string path)
+        {
+            try
+            {
+                File.Delete(path);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error eliminando arbol: " + path + ", ¿Existe el archivo?", e);
+            }
+        }
+
 
     }
 }

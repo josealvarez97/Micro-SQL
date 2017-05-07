@@ -16,41 +16,54 @@ namespace Proyecto01
         Form1 form;
         public Form2()
         {
-            InitializeComponent();           
+            InitializeComponent();
         }
-
-
-
         // Carga diccionario del usario y lo escribe en el diccionario principal.
         private void uploadDictionary_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "Dictionary files | *.ini"; // file types, that will be allowed to upload
             dialog.Multiselect = false; // allow/deny user to upload more than one file at a time
+            long lengthSize;
+
             if (dialog.ShowDialog() == DialogResult.OK) // if user clicked OK
             {
-                StreamWriter dictionary = new StreamWriter(new FileStream("C:/microSQL/microSQL.ini", FileMode.Create), new UTF8Encoding());
+
                 String path = dialog.FileName; // get name of file
+                lengthSize = new System.IO.FileInfo(path).Length; // Retorna el tamano en bytes del archivo
                 string line = "";
                 using (StreamReader reader = new StreamReader(new FileStream(path, FileMode.Open), new UTF8Encoding())) // do anything you want, e.g. read it
                 {
-                    while (!reader.EndOfStream)
+                    if (lengthSize != 0)
                     {
-                        line = reader.ReadLine();
-                        dictionary.WriteLine(line);
-                        dictionary.Flush();
+                        StreamWriter dictionary = new StreamWriter(new FileStream("C:/microSQL/microSQL.ini", FileMode.Create), new UTF8Encoding()); // Si si hay archivo pues creo el dictionary
+                        while (!reader.EndOfStream)
+                        {
+                            line = reader.ReadLine();
+                            dictionary.WriteLine(line);
+                            dictionary.Flush();
+                        }
+
+                        dictionary.Dispose();
+                        form = new Form1();
+                        this.Hide();
+                        form.ShowDialog();
+                        this.Close();
                     }
+
+                    else
+                        MessageBox.Show("ERROR: Seleccione un diccionario");
                 }
-                dictionary.Dispose();
+
             }
-            form = new Form1();
-            form.Show();
+
+
+
         }
-
-
         // Crea y escribe en el archivo los valores predeterminados
         private void uploadDictionaryDefault_Click(object sender, EventArgs e)
         {
+            Form2 form2 = new Form2();
             using (StreamWriter dictionary = new StreamWriter(new FileStream("C:/microSQL/microSQL.ini", FileMode.OpenOrCreate), new UTF8Encoding()))
             {
                 dictionary.WriteLine("<SELECT>, <SELECT>");
@@ -64,8 +77,12 @@ namespace Proyecto01
                 dictionary.Write("<GO>, <GO>");
                 dictionary.Flush();
                 dictionary.Dispose();
-                form = new Form1();
-                form.Show();
+
+                form = new Form1();            
+                this.Hide();
+                form.ShowDialog();
+                this.Close();
+
             }
         }
     }

@@ -35,8 +35,14 @@ namespace Proyecto01
         public string DEFAULT_MIN_VAL_FORMAT
         {
             get
-            {                
-                return int.MinValue.ToString();
+            {
+                string defaultFormat = "";
+
+                for (int i = 0; i < 100; i++)
+                {
+                    defaultFormat += "a";
+                }
+                return defaultFormat;
             }
         }
 
@@ -59,6 +65,10 @@ namespace Proyecto01
         public Varchar ParseToObjectType(string str)
         {
             Varchar varcharInstance = new Varchar();
+
+            str = str.Replace('~', ' ');
+            str = str.Trim();
+
             varcharInstance.value = str;
 
             return varcharInstance;
